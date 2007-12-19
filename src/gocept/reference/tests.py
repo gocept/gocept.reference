@@ -17,7 +17,8 @@ FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
 
 
 def test_suite():
-    suite = FunctionalDocFileSuite('reference.txt',
-                                   optionflags=doctest.ELLIPSIS)
+    suite = FunctionalDocFileSuite(
+      'reference.txt',
+      optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
     suite.layer = FunctionalLayer
     return suite

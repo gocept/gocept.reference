@@ -3,4 +3,11 @@
   <include package="zope.traversing" />
   <include package="zope.annotation" />
 
+  <subscriber handler=".reference.ensure_referential_integrity" />
+
+  <utility
+    name="gocept.reference"
+    provides="zope.app.generations.interfaces.ISchemaManager"
+    component=".generations.manager" />
+
 </configure>
