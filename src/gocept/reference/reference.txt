@@ -27,7 +27,6 @@ For working with references you have to have a located site set:
 ...         self.zip = zip
 
 
->>> root.__name__ = 'root'
 >>> root['dessau'] = City('Dessau', '06844')
 >>> root['halle'] = City('Halle', '06110')
 >>> root['jena'] = City('Jena', '07743')
