@@ -48,30 +48,31 @@ Reference semantic
   What meaning does the reference have? How can the meaning change?
 
 Integrity
-  What might happen to my application if data that is involved in the reference might change or become deleted?
+  What might happen to my application if data that is involved in the
+  reference might change or become deleted?
 
 Set/Lookup
-  What do I (as an application developer) have to do to set a reference or look up a referenced object?
+  What do I (as an application developer) have to do to set a reference or
+  look up a referenced object?
 
 
-  ======================    =========================================     ===========================================   ========================================    ====================================================
-  Property                  Python references                              Weak references                              Key reference                               Relational DBs
-  ======================    =========================================     ===========================================   ========================================    ====================================================
+======================    =========================================     ===========================================   ========================================    ====================================================
+Property                  Python references                              Weak references                              Key reference                               Relational DBs
+======================    =========================================     ===========================================   ========================================    ====================================================
+Reference data            OID                                           OID                                           application-specific key                    application-specific (primary key + table name)
 
-  Reference data            OID                                           OID                                           application-specific key                    application-specific (primary key + table name)
+Reference semantic        Refers to a specific                          Refers to a spec  ific                        Refers to an object which                   Refers to an object (row) that is associated
+                          Python object                                 Python object                                 is associated with the saved key            with the primary key at the moment of the lookup.
+                                                                                                                      at the moment of lookup.
 
-  Reference semantic        Refers to a specific                          Refers to a spec  ific                        Refers to an object which                   Refers to an object (row) that is associated
-                            Python object                                 Python object                                 is associated with the saved key            with the primary key at the moment of the lookup.
-                                                                                                                        at the moment of lookup.
+Integrity                 The reference stays valid, however,           The reference might have become stale         The reference might have become             Dependening on the use of `foreign keys`
+                          the target object might have lost its         and leave the referencing object in an        stale.                                      and the databases implementation of constraints.
+                          meaning for the application.                  invalid state.                                                                            Can usually be forced to stay valid.
 
-  Integrity                 The reference stays valid, however,           The reference might have become stale         The reference might have become             Dependening on the use of `foreign keys`
-                            the target object might have lost its         and leave the referencing object in an        stale.                                      and the databases implementation of constraints.
-                            meaning for the application.                  invalid state.                                                                            Can usually be forced to stay valid.
-
-  Set/Lookup                Normal Python attribute access.               Use WeakRef-wrapper to store and              Depends on the implementation.              Explicitly store the primary key.
-                                                                          __call__ to lookup. Might use properties      Might use properties for convenience.       Use JOIN to look up.
-                                                                          for convenience.
-  ======================    =========================================     ===========================================   ========================================    ====================================================
+Set/Lookup                Normal Python attribute access.               Use WeakRef-wrapper to store and              Depends on the implementation.              Explicitly store the primary key.
+                                                                        __call__ to lookup. Might use properties      Might use properties for convenience.       Use JOIN to look up.
+                                                                        for convenience.
+======================    =========================================     ===========================================   ========================================    ====================================================
 
 Observations
 ============
@@ -131,10 +132,10 @@ Implementation notes
 
 * Constraints are enforced by monitoring containment events.
 
-* The different ways of updating/changing a key's meaning are supported by an indirection
-  that enumerates all keys and stores a `reference id` on the referencing object
-  instead of the location. The two use cases for changing the meaning are
-  reflected to either: 
+* The different ways of updating/changing a key's meaning are supported by an
+  indirection that enumerates all keys and stores a `reference id` on the
+  referencing object instead of the location. The two use cases for changing
+  the meaning are reflected to either:
 
   1. associate a new path with an existing reference id
 
