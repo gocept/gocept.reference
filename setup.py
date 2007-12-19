@@ -22,7 +22,6 @@ setup(
     namespace_packages = ['gocept'],
     install_requires = ['setuptools',
                         'ZODB3',
-                        'z3c.objpath',
                         'zope.annotation',
                         'zope.traversing'],
     extras_require = {

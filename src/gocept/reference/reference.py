@@ -11,8 +11,7 @@ from persistent.dict import PersistentDict
 import zope.app.component.hooks
 import zope.annotation.interfaces
 import zope.traversing.interfaces
-
-import z3c.objpath
+import zope.traversing.api
 
 
 def find_name(method):
@@ -45,10 +44,10 @@ class Reference(object):
 
     def __get__(self, instance, owner):
         target = self.storage(instance)[self.__name__]
-        return z3c.objpath.resolve(self.root, target)
+        return zope.traversing.api.traverse(self.root, target)
 
     def __set__(self, instance, value):
-        target = z3c.objpath.path(self.root, value)
+        target = zope.traversing.api.getPath(value)
         self.storage(instance)[self.__name__] = target
 
     def __delete__(self, instance):
