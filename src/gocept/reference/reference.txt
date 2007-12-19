@@ -1,0 +1,38 @@
+===================
+Referencing objects
+===================
+
+
+>>> from zope.app.container.contained import Contained
+>>> import zope.interface
+>>> import zope.annotation.interfaces
+>>> import gocept.reference
+
+For working with references you have to have a located site set:
+
+>>> import zope.app.component.hooks
+>>> root = getRootFolder()
+>>> zope.app.component.hooks.setSite(root)
+
+>>> class Address(Contained):
+...     city = gocept.reference.Reference()
+...     zope.interface.implements(
+...         zope.annotation.interfaces.IAttributeAnnotatable)
+...     def __init__(self, name, city):
+...         self.name = name
+...         self.city = city
+>>> class City(Contained):
+...     def __init__(self, name, zip):
+...         self.name = name
+...         self.zip = zip
+
+
+>>> root.__name__ = 'root'
+>>> root['dessau'] = City('Dessau', '06844')
+>>> root['halle'] = City('Halle', '06110')
+>>> root['jena'] = City('Jena', '07743')
+
+>>> theuni = Address('Christian Theune', root['dessau'])
+
+>>> theuni.city
+<City object at 0x...>
