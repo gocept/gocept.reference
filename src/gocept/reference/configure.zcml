@@ -1,0 +1,6 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.traversing" />
+  <include package="zope.annotation" />
+
+</configure>
