@@ -3,6 +3,9 @@ Referencing objects
 ===================
 
 
+Simple references
+=================
+
 >>> from zope.app.container.contained import Contained
 >>> import zope.interface
 >>> import zope.annotation.interfaces
@@ -35,3 +38,52 @@ For working with references you have to have a located site set:
 
 >>> theuni.city
 <City object at 0x...>
+
+
+
+>>> theuni.city = None
+>>> print theuni.city
+None
+
+>>> del theuni.city
+>>> theuni.city
+Traceback (most recent call last):
+AttributeError: city
+
+
+>>> theuni.city = 12
+Traceback (most recent call last):
+TypeError: ...
+
+
+Constraints
+===========
+
+>>> class Monument(Contained):
+...     city = gocept.reference.Reference(ensure_integrity=True)
+...     zope.interface.implements(
+...         zope.annotation.interfaces.IAttributeAnnotatable)
+...     def __init__(self, name, city):
+...         self.name = name
+...         self.city = city
+
+>>> fuchsturm = Monument('Fuchsturm', root['jena'])
+
+>>> del root['jena']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <City object at 0x...>.
+It is still being referenced.
+
+>>> del fuchsturm.city
+>>> del root['jena']
+>>> 'jena' in root
+False
+
+
+Upgrading from unconstrained to constrained references
+------------------------------------------------------
+
+Downgrading from integrity ensured references to unensured
+----------------------------------------------------------
+
+
