@@ -8,7 +8,36 @@ import unittest
 import doctest
 import os.path
 
+import zope.interface
+import zope.annotation.interfaces
 from zope.app.testing.functional import FunctionalDocFileSuite, ZCMLLayer
+from zope.app.container.contained import Contained
+
+import gocept.reference
+
+
+class Address(Contained):
+    city = gocept.reference.Reference()
+    zope.interface.implements(
+        zope.annotation.interfaces.IAttributeAnnotatable)
+    def __init__(self, name, city):
+        self.name = name
+        self.city = city
+
+
+class City(Contained):
+    def __init__(self, name, zip):
+        self.name = name
+        self.zip = zip
+
+
+class Monument(Contained):
+    city = gocept.reference.Reference(ensure_integrity=True)
+    zope.interface.implements(
+        zope.annotation.interfaces.IAttributeAnnotatable)
+    def __init__(self, name, city):
+        self.name = name
+        self.city = city
 
 
 ftesting_zcml = os.path.join(
