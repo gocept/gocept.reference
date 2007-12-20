@@ -12,6 +12,20 @@ class IntegrityError(Exception):
     pass
 
 
+class IReferenceSource(zope.interface.Interface):
+    """Interact with an object that holds references."""
+
+    def verify_integrity():
+        """Tell whether referential integrity is given."""
+
+
+class IReferenceTarget(zope.interface.Interface):
+    """Interact with an object that may be referenced."""
+
+    def is_referenced():
+        """Tell whether any references to the object exist."""
+
+
 class IReferenceManager(zope.interface.Interface):
     """Utility for managing references."""
 

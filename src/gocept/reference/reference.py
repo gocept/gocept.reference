@@ -68,20 +68,21 @@ def find_references(obj):
     for name in dir(obj):
         attr = getattr(obj.__class__, name, None)
         if isinstance(attr, Reference):
-            yield attr
+            yield name, attr
 
 
 @zope.component.adapter(zope.interface.Interface,
                         zope.app.container.interfaces.IObjectAddedEvent)
 def ensure_registration(obj, event):
-    for ref in find_references(obj):
-        ref._register(obj)
+    for name, ref in find_references(obj):
+        if ref.storage(obj).get(name):
+            ref._register(obj)
 
 
 @zope.component.adapter(zope.interface.Interface,
                         zope.app.container.interfaces.IObjectRemovedEvent)
 def ensure_unregistration(obj, event):
-    for ref in find_references(obj):
+    for name, ref in find_references(obj):
         ref._unregister(obj)
 
 

@@ -68,7 +68,15 @@ DoomedTransaction
 >>> 'dessau' in root
 True
 
+>>> from gocept.reference.interfaces import IReferenceTarget
+
+>>> IReferenceTarget(root['dessau']).is_referenced()
+True
+
 >>> root['fuchsturm'].city = None
+>>> IReferenceTarget(root['dessau']).is_referenced()
+False
+
 >>> del root['dessau']
 >>> 'dessau' in root
 False
@@ -128,17 +136,21 @@ transaction:
 
 >>> fuchsturm.__parent__ = fuchsturm.__name__ = None
 
+>>> from gocept.reference.interfaces import IReferenceSource
+>>> IReferenceSource(fuchsturm).verify_integrity()
+False
+
+>>> IReferenceTarget(root['halle']).is_referenced()
+False
 >>> fuchsturm.city = root['halle']
+>>> IReferenceSource(fuchsturm).verify_integrity()
+True
+>>> IReferenceTarget(root['halle']).is_referenced()
+False
+
 >>> root['fuchsturm'] = fuchsturm
-
->>> transaction.commit()
-
->>> del root['halle']
-Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.City object at 0x...>.
-It is still being referenced.
-
->>> transaction.abort()
+>>> IReferenceTarget(root['halle']).is_referenced()
+True
 
 >>> fuchsturm = root['fuchsturm']
 >>> del root['fuchsturm']
