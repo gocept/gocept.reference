@@ -3,9 +3,9 @@
   <include package="zope.traversing" />
   <include package="zope.annotation" />
 
-  <subscriber handler=".reference.ensure_referential_integrity" />
-  <subscriber handler=".reference.ensure_registration" />
-  <subscriber handler=".reference.ensure_unregistration" />
+  <subscriber handler=".content.ensure_referential_integrity" />
+  <subscriber handler=".content.ensure_registration" />
+  <subscriber handler=".content.ensure_unregistration" />
 
   <adapter factory=".content.ReferenceSource" />
   <adapter factory=".content.ReferenceTarget" />

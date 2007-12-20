@@ -4,12 +4,9 @@
 # $Id$
 """References to persistent objects."""
 
-import sys
-
 import transaction
 from persistent.dict import PersistentDict
 
-import zope.app.container.interfaces
 import zope.app.component.hooks
 import zope.annotation.interfaces
 import zope.traversing.interfaces
@@ -38,52 +35,6 @@ def find_name(method):
                     "Please use the __name__ parameter.")
         return method(self, instance, *args, **kw)
     return find_name_impl
-
-
-@zope.component.adapter(zope.interface.Interface,
-                        zope.app.container.interfaces.IObjectMovedEvent)
-def ensure_referential_integrity(obj, event):
-    if event.oldParent is None:
-        # The object was not in the hierarchy before so it didn't have a path
-        # and can't be referenced currently.
-        return
-
-    # Compute the old path and watch out for the case that the object was
-    # located in the root folder to avoid ending up with a double-slash in the
-    # beginning.
-    old_parent_path = zope.traversing.api.getPath(event.oldParent)
-    if old_parent_path == '/':
-        old_parent_path = ''
-    old_path = (old_parent_path + '/' + event.oldName)
-
-    manager = zope.component.getUtility(
-        gocept.reference.interfaces.IReferenceManager)
-    if manager.is_referenced(old_path):
-        transaction.doom()
-        raise gocept.reference.interfaces.IntegrityError(
-            "Can't delete or move %r. It is still being referenced." % obj)
-
-
-def find_references(obj):
-    for name in dir(obj):
-        attr = getattr(obj.__class__, name, None)
-        if isinstance(attr, Reference):
-            yield name, attr
-
-
-@zope.component.adapter(zope.interface.Interface,
-                        zope.app.container.interfaces.IObjectAddedEvent)
-def ensure_registration(obj, event):
-    for name, ref in find_references(obj):
-        if ref.storage(obj).get(name):
-            ref._register(obj)
-
-
-@zope.component.adapter(zope.interface.Interface,
-                        zope.app.container.interfaces.IObjectRemovedEvent)
-def ensure_unregistration(obj, event):
-    for name, ref in find_references(obj):
-        ref._unregister(obj)
 
 
 class Reference(object):
