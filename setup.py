@@ -5,6 +5,7 @@
 
 from setuptools import setup, find_packages
 
+
 name = "gocept.reference"
 setup(
     name = name,
@@ -22,13 +23,13 @@ setup(
     namespace_packages = ['gocept'],
     install_requires = ['setuptools',
                         'ZODB3',
+                        'zope.interface',
+                        'zope.component',
                         'zope.annotation',
-                        'zope.traversing'],
+                        'zope.traversing',
+                        'zope.app.container',
+                        ],
     extras_require = {
-        'test': ['zope.app.container']
+        'test': ['zope.app.testing']
     },
-    entry_points = {
-        'zc.buildout': [
-            'default = %s.recipe:Recipe [recipe]' % name,
-        ]},
     )
