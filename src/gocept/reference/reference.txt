@@ -6,29 +6,13 @@ Referencing objects
 Simple references
 =================
 
->>> from zope.app.container.contained import Contained
->>> import zope.interface
->>> import zope.annotation.interfaces
->>> import gocept.reference
-
 For working with references you have to have a located site set:
 
 >>> import zope.app.component.hooks
 >>> root = getRootFolder()
 >>> zope.app.component.hooks.setSite(root)
 
->>> class Address(Contained):
-...     city = gocept.reference.Reference()
-...     zope.interface.implements(
-...         zope.annotation.interfaces.IAttributeAnnotatable)
-...     def __init__(self, name, city):
-...         self.name = name
-...         self.city = city
->>> class City(Contained):
-...     def __init__(self, name, zip):
-...         self.name = name
-...         self.zip = zip
-
+>>> from gocept.reference.tests import Address, City
 
 >>> root['dessau'] = City('Dessau', '06844')
 >>> root['halle'] = City('Halle', '06110')
@@ -37,9 +21,7 @@ For working with references you have to have a located site set:
 >>> theuni = Address('Christian Theune', root['dessau'])
 
 >>> theuni.city
-<City object at 0x...>
-
-
+<gocept.reference.tests.City object at 0x...>
 
 >>> theuni.city = None
 >>> print theuni.city
@@ -50,33 +32,121 @@ None
 Traceback (most recent call last):
 AttributeError: city
 
-
 >>> theuni.city = 12
 Traceback (most recent call last):
 TypeError: ...
 
 
-Constraints
-===========
+Integrity-ensured references
+============================
 
->>> class Monument(Contained):
-...     city = gocept.reference.Reference(ensure_integrity=True)
-...     zope.interface.implements(
-...         zope.annotation.interfaces.IAttributeAnnotatable)
-...     def __init__(self, name, city):
-...         self.name = name
-...         self.city = city
+>>> from gocept.reference.tests import Monument
 
->>> fuchsturm = Monument('Fuchsturm', root['jena'])
+Located source
+--------------
 
->>> del root['jena']
+Referential integrity can be ensured iff the source of the reference is
+located:
+
+>>> root['fuchsturm'] = Monument('Fuchsturm', root['dessau'])
+>>> root['fuchsturm'].city is root['dessau']
+True
+
+>>> import transaction
+>>> transaction.commit()
+
+>>> del root['dessau']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <City object at 0x...>.
+IntegrityError: Can't delete or move <gocept.reference.tests.City object at 0x...>.
 It is still being referenced.
 
+>>> transaction.commit()
+Traceback (most recent call last):
+DoomedTransaction
+
+>>> transaction.abort()
+>>> 'dessau' in root
+True
+
+>>> root['fuchsturm'].city = None
+>>> del root['dessau']
+>>> 'dessau' in root
+False
+
+XXX References will also be correctly cancelled when the attribute or the
+source is deleted.
+
+>>> del root['fuchsturm']
+
+Non-located source
+------------------
+
+If the source of a reference is not located, we can do anything we want with
+references, including breaking them:
+
+>>> fuchsturm = Monument('Fuchsturm', root['jena'])
+>>> fuchsturm.city is root['jena']
+True
+
 >>> del fuchsturm.city
+>>> fuchsturm.city
+Traceback (most recent call last):
+AttributeError: city
+
+>>> fuchsturm.city = root['jena']
+>>> fuchsturm.city is root['jena']
+True
+
 >>> del root['jena']
->>> 'jena' in root
+>>> fuchsturm.city
+Traceback (most recent call last):
+IntegrityError: Target u'/jena' of reference 'city' no longer exists.
+
+
+Changing the location state of the source
+-----------------------------------------
+
+We cannot put an object with a broken reference back into containment since
+referential integrity is not given:
+
+>>> transaction.commit()
+
+>>> root['fuchsturm'] = fuchsturm
+Traceback (most recent call last):
+IntegrityError: Target u'/jena' of reference 'city' no longer exists.
+
+The transaction was doomed, let's recover the last working state:
+
+>>> transaction.commit()
+Traceback (most recent call last):
+DoomedTransaction
+
+>>> transaction.abort()
+
+We have to repair the fuchsturm object by hand as it was not part of the
+transaction:
+
+>>> fuchsturm.__parent__ = fuchsturm.__name__ = None
+
+>>> fuchsturm.city = root['halle']
+>>> root['fuchsturm'] = fuchsturm
+
+>>> transaction.commit()
+
+>>> del root['halle']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.City object at 0x...>.
+It is still being referenced.
+
+>>> transaction.abort()
+
+>>> fuchsturm = root['fuchsturm']
+>>> del root['fuchsturm']
+>>> fuchsturm.city is root['halle']
+True
+
+>>> del root['halle']
+>>> 'halle' in root
 False
 
 

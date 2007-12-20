@@ -6,6 +6,7 @@
 
 import sys
 
+import transaction
 from persistent.dict import PersistentDict
 
 import zope.app.container.interfaces
@@ -58,8 +59,30 @@ def ensure_referential_integrity(obj, event):
     manager = zope.component.getUtility(
         gocept.reference.interfaces.IReferenceManager)
     if manager.is_referenced(old_path):
+        transaction.doom()
         raise gocept.reference.interfaces.IntegrityError(
             "Can't delete or move %r. It is still being referenced." % obj)
+
+
+def find_references(obj):
+    for name in dir(obj):
+        attr = getattr(obj.__class__, name, None)
+        if isinstance(attr, Reference):
+            yield attr
+
+
+@zope.component.adapter(zope.interface.Interface,
+                        zope.app.container.interfaces.IObjectAddedEvent)
+def ensure_registration(obj, event):
+    for ref in find_references(obj):
+        ref._register(obj)
+
+
+@zope.component.adapter(zope.interface.Interface,
+                        zope.app.container.interfaces.IObjectRemovedEvent)
+def ensure_unregistration(obj, event):
+    for ref in find_references(obj):
+        ref._unregister(obj)
 
 
 class Reference(object):
@@ -71,13 +94,16 @@ class Reference(object):
 
     @find_name
     def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
         try:
-            target = self.storage(instance)[self.__name__]
+            target_key = self.storage(instance)[self.__name__]
         except KeyError:
             raise AttributeError(self.__name__)
-        if target is None:
+        if target_key is None:
             return None
-        return zope.traversing.api.traverse(self.root, target)
+        return self.lookup(target_key)
 
     @find_name
     def __set__(self, instance, value):
@@ -98,18 +124,24 @@ class Reference(object):
     # Helper methods
 
     def _unregister(self, instance):
-        if not self.ensure_integrity:
+        if not self.needs_registration(instance):
             return
-        target = self.storage(instance).get(self.__name__)
-        if not target:
+        target_key = self.storage(instance).get(self.__name__)
+        if not target_key:
             return
-        self.manager.unregister_reference(target)
+        self.manager.unregister_reference(target_key)
 
     def _register(self, instance):
-        if not self.ensure_integrity:
+        if not self.needs_registration(instance):
             return
-        target = self.storage(instance)[self.__name__]
-        self.manager.register_reference(target)
+        target_key = self.storage(instance)[self.__name__]
+        try:
+            self.lookup(target_key)
+        except gocept.reference.interfaces.IntegrityError:
+            # _register is called after data structures have been changed.
+            transaction.doom()
+            raise
+        self.manager.register_reference(target_key)
 
     @property
     def manager(self):
@@ -128,3 +160,23 @@ class Reference(object):
         if result is None:
             result = annotations['gocept.reference'] = PersistentDict()
         return result
+
+    def needs_registration(self, instance):
+        if not self.ensure_integrity:
+            return False
+        try:
+            zope.traversing.interfaces.IPhysicallyLocatable(instance
+                                                            ).getPath()
+        except TypeError:
+            return False
+
+        return True
+
+    def lookup(self, target_key):
+        try:
+            target = zope.traversing.api.traverse(self.root, target_key)
+        except zope.traversing.interfaces.TraversalError:
+            raise gocept.reference.interfaces.IntegrityError(
+                "Target %r of reference %r no longer exists." %
+                (target_key, self.__name__))
+        return target
