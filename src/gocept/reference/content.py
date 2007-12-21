@@ -67,20 +67,34 @@ def ensure_referential_integrity(obj, event):
         # and can't be referenced currently.
         return
 
-    # Compute the old path and watch out for the case that the object was
-    # located in the root folder to avoid ending up with a double-slash in the
-    # beginning.
+    # 1. Compute the old path to the container that an object was removed from
     old_parent_path = zope.traversing.api.getPath(event.oldParent)
     if old_parent_path == '/':
+        # The object that was removed was located in the root folder. We
+        # remove the slash to avoid ending up with a double-slash in the next
+        # step.
         old_parent_path = ''
+
+    # 2. Compute the path to the object that was removed
     old_path = (old_parent_path + '/' + event.oldName)
+
+    # 3. If our obj is not the moved object then we're a sublocation and need
+    # to reconstruct the further path to the sublocation.
+    suffix = ''
+    suffix_obj = obj
+    while suffix_obj is not event.object:
+        suffix = '/%s%s' % (suffix_obj.__name__, suffix)
+        suffix_obj = suffix_obj.__parent__
+    old_path = old_path + suffix
 
     manager = zope.component.getUtility(
         gocept.reference.interfaces.IReferenceManager)
     if manager.is_referenced(old_path):
         transaction.doom()
         raise gocept.reference.interfaces.IntegrityError(
-            "Can't delete or move %r. It is still being referenced." % obj)
+            "Can't delete or move %r. "
+            "The (sub-)object %r is still being referenced." % 
+            (event.object, obj))
 
 
 @zope.component.adapter(zope.interface.Interface,

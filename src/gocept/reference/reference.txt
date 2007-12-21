@@ -57,8 +57,10 @@ True
 
 >>> del root['dessau']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.City object at 0x...>.
-It is still being referenced.
+IntegrityError: Can't delete or move
+  <gocept.reference.tests.City object at 0x...>.
+  The (sub-)object <gocept.reference.tests.City object at 0x882796c> is
+  still being referenced.
 
 >>> transaction.commit()
 Traceback (most recent call last):
@@ -160,6 +162,23 @@ True
 >>> del root['halle']
 >>> 'halle' in root
 False
+
+Hierarchіcal structures
+-----------------------
+
+Trying to delete objects that contain referenced objects with ensured
+integrity is also forbidden:
+
+>>> import zope.app.container.sample
+>>> root['folder'] = zope.app.container.sample.SampleContainer()
+>>> root['folder']['frankfurt'] = City('Frankfurt', '12345')
+>>> root['messeturm'] = Monument('Messeturm', root['folder']['frankfurt'])
+>>> del root['folder']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move
+  <zope.app.container.sample.SampleContainer object at 0x...>.
+  The (sub-)object <gocept.reference.tests.City object at 0x...> is still
+  being referenced.
 
 
 Upgrading from unconstrained to constrained references
