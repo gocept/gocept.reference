@@ -5,6 +5,9 @@ Changes
 0.2 (unreleased)
 ----------------
 
+- Extended the API for `IReferenceTarget.is_referenced` to allow querying for
+  references recursively.
+
 - Fixed bug in the event handler for enforcing ensured constraints: referenced
   objects could be deleted if they were deleted together with a parent
   location.
