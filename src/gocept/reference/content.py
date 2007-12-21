@@ -51,12 +51,23 @@ class ReferenceTarget(object):
     def __init__(self, context):
         self.context = context
 
-    def is_referenced(self):
+    def is_referenced(self, recursive=False):
         manager = zope.component.getUtility(
             gocept.reference.interfaces.IReferenceManager)
         locatable = zope.traversing.interfaces.IPhysicallyLocatable(
                 self.context)
-        return manager.is_referenced(locatable.getPath())
+        if manager.is_referenced(locatable.getPath()):
+            return True
+
+        if recursive:
+            subs = zope.location.interfaces.ISublocations(self.context)
+            for sub in subs.sublocations():
+                sub_target = gocept.reference.interfaces.IReferenceTarget(sub)
+                if sub_target.is_referenced(recursive=True):
+                    return True
+
+        # Neither our context nor any of the sub objects are referenced.
+        return False
 
 
 @zope.component.adapter(zope.interface.Interface,
