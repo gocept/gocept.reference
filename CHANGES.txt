@@ -2,8 +2,8 @@
 Changes
 =======
 
-0.2 (unreleased)
-----------------
+0.2
+---
 
 - Extended the API for `IReferenceTarget.is_referenced` to allow specifying
   whether to query for references recursively or only on a specific object.
