@@ -90,7 +90,7 @@ Observations
 - Relational: When referencing an object we can enforce integrity by declaring
   a foreign key. This is orthogonal to the data stored.
 
-- Relational: As an application-level key is used for identіfying the target
+- Relational: As an application-level key is used for identifying the target
   of a reference the application can choose to delete a row and re-add a row
   with the same primary key later. If the integrity is enforced this requires
   support on the database level to temporarily ignore broken foreign keys.

@@ -10,8 +10,8 @@ name = "gocept.reference"
 setup(
     name = name,
     version = "0.1",
-    author = "Christian Theune",
-    author_email = "ct@gocept.com",
+    author = "gocept gmbh & co. kg",
+    author_email = "developers@gocept.com",
     description = "Intrinsic references for Zope/ZODB applications.",
     long_description = open('README.txt').read(),
     license = "ZPL 2.1",
