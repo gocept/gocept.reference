@@ -181,9 +181,9 @@ beforehand:
 >>> from gocept.reference.interfaces import IReferenceTarget
 >>> folder_target = IReferenceTarget(root['folder'])
 >>> folder_target.is_referenced()
-False
->>> folder_target.is_referenced(recursive=True)
 True
+>>> folder_target.is_referenced(recursive=False)
+False
 
 
 >>> del root['folder']
