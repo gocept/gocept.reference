@@ -140,3 +140,11 @@ Implementation notes
   1. associate a new path with an existing reference id
 
   2. associate a new reference id with an existing path
+
+
+TODO
+====
+
+- Complex reference objects (lists of references, dicts, tuples, sets, ...).
+  This might also get solved if we find a way to compute canonical locations
+  for arbitrary objects.
