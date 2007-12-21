@@ -5,8 +5,9 @@ Changes
 0.2 (unreleased)
 ----------------
 
-- Extended the API for `IReferenceTarget.is_referenced` to allow querying for
-  references recursively.
+- Extended the API for `IReferenceTarget.is_referenced` to allow specifying
+  whether to query for references recursively or only on a specific object.
+  By default the query is recursive. 
 
 - Fixed bug in the event handler for enforcing ensured constraints: referenced
   objects could be deleted if they were deleted together with a parent
