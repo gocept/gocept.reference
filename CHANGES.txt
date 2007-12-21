@@ -5,6 +5,9 @@ Changes
 0.2 (unreleased)
 ----------------
 
+- Fixed bug in the event handler for enforcing ensured constraints: referenced
+  objects could be deleted if they were deleted together with a parent
+  location.
 
 0.1
 ---
