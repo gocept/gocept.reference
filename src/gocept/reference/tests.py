@@ -17,27 +17,46 @@ import gocept.reference
 
 
 class Address(Contained):
+
     city = gocept.reference.Reference()
+
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
+
     def __init__(self, name, city):
         self.name = name
         self.city = city
 
 
 class City(Contained):
+
+    zope.interface.implements(
+        zope.annotation.interfaces.IAttributeAnnotatable)
+
+    cultural_institutions = gocept.reference.ReferenceCollection(
+        ensure_integrity=True)
+
     def __init__(self, name, zip):
         self.name = name
         self.zip = zip
 
 
 class Monument(Contained):
+
     city = gocept.reference.Reference(ensure_integrity=True)
+
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
+
     def __init__(self, name, city):
         self.name = name
         self.city = city
+
+
+class CulturalInstitution(Contained):
+
+    def __init__(self, title):
+      self.title = title
 
 
 ftesting_zcml = os.path.join(
@@ -48,6 +67,7 @@ FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
 def test_suite():
     suite = FunctionalDocFileSuite(
       'reference.txt',
+      'collection.txt',
       optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
     suite.layer = FunctionalLayer
     return suite

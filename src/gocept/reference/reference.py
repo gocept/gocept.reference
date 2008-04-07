@@ -22,7 +22,6 @@ def find_name(method):
     The result is cached during the runtime of the process.
 
     """
-
     def find_name_impl(self, instance, *args, **kw):
         if not self.__name__:
             for name, attr in instance.__class__.__dict__.items():
@@ -37,63 +36,17 @@ def find_name(method):
     return find_name_impl
 
 
-class Reference(object):
-    """A descriptor for reference properties."""
+class ReferenceBase(object):
+    """A base class for specific references."""
 
     def __init__(self, __name__=None, ensure_integrity=False):
         self.__name__ = __name__
         self.ensure_integrity = ensure_integrity
 
     @find_name
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-
-        try:
-            target_key = self.storage(instance)[self.__name__]
-        except KeyError:
-            raise AttributeError(self.__name__)
-        if target_key is None:
-            return None
-        return self.lookup(target_key)
-
-    @find_name
-    def __set__(self, instance, value):
-        self._unregister(instance)
-        if value is None:
-            self.storage(instance)[self.__name__] = None
-            return
-        target = zope.traversing.api.getPath(value)
-        storage = self.storage(instance)
-        self.storage(instance)[self.__name__] = target
-        self._register(instance)
-
-    @find_name
     def __delete__(self, instance):
         self._unregister(instance)
         del self.storage(instance)[self.__name__]
-
-    # Helper methods
-
-    def _unregister(self, instance):
-        if not self.needs_registration(instance):
-            return
-        target_key = self.storage(instance).get(self.__name__)
-        if not target_key:
-            return
-        self.manager.unregister_reference(target_key)
-
-    def _register(self, instance):
-        if not self.needs_registration(instance):
-            return
-        target_key = self.storage(instance)[self.__name__]
-        try:
-            self.lookup(target_key)
-        except gocept.reference.interfaces.IntegrityError:
-            # _register is called after data structures have been changed.
-            transaction.doom()
-            raise
-        self.manager.register_reference(target_key)
 
     @property
     def manager(self):
@@ -132,3 +85,53 @@ class Reference(object):
                 "Target %r of reference %r no longer exists." %
                 (target_key, self.__name__))
         return target
+
+
+class Reference(ReferenceBase):
+    """A descriptor for reference properties."""
+
+    @find_name
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
+        try:
+            target_key = self.storage(instance)[self.__name__]
+        except KeyError:
+            raise AttributeError(self.__name__)
+        if target_key is None:
+            return None
+        return self.lookup(target_key)
+
+    @find_name
+    def __set__(self, instance, value):
+        self._unregister(instance)
+        storage = self.storage(instance)
+        if value is None:
+            storage[self.__name__] = None
+            return
+        target = zope.traversing.api.getPath(value)
+        storage[self.__name__] = target
+        self._register(instance)
+
+    # Helper methods
+
+    def _unregister(self, instance):
+        if not self.needs_registration(instance):
+            return
+        target_key = self.storage(instance).get(self.__name__)
+        if not target_key:
+            return
+        self.manager.unregister_reference(target_key)
+
+    def _register(self, instance):
+        if not self.needs_registration(instance):
+            return
+        target_key = self.storage(instance)[self.__name__]
+        try:
+            self.lookup(target_key)
+        except gocept.reference.interfaces.IntegrityError:
+            # _register is called after data structures have been changed.
+            transaction.doom()
+            raise
+        self.manager.register_reference(target_key)

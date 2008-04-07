@@ -27,10 +27,15 @@ For working with references you have to have a located site set:
 >>> print theuni.city
 None
 
+Values can be deleted, the property raises an AttributeError then:
+
 >>> del theuni.city
 >>> theuni.city
 Traceback (most recent call last):
 AttributeError: city
+
+Only contained objects can be assigned to a reference property that has
+integrity ensurance enabled:
 
 >>> theuni.city = 12
 Traceback (most recent call last):
@@ -197,7 +202,9 @@ IntegrityError: Can't delete or move
 Upgrading from unconstrained to constrained references
 ------------------------------------------------------
 
+XXX
+
 Downgrading from integrity ensured references to unensured
 ----------------------------------------------------------
 
-
+XXX

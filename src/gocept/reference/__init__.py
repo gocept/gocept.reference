@@ -1,3 +1,7 @@
 # Make this a Python package
 
-from gocept.reference.reference import Reference
+import zope.deferredimport
+
+zope.deferredimport.define(
+    Reference='gocept.reference.reference:Reference',
+    ReferenceCollection='gocept.reference.collection:ReferenceCollection')

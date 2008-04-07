@@ -27,6 +27,7 @@ setup(
                         'zope.component',
                         'zope.annotation',
                         'zope.traversing',
+                        'zope.deferredimport',
                         'zope.app.container',
                         ],
     extras_require = {
