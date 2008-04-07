@@ -5,6 +5,8 @@ Changes
 0.3
 ---
 
+- Added a `set` implementation for referencing collections of objects.
+
 0.2
 ---
 
