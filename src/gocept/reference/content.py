@@ -38,7 +38,7 @@ class ReferenceSource(object):
             if target_key:
                 try:
                     ref.lookup(target_key)
-                except gocept.reference.interfaces.IntegrityError:
+                except gocept.reference.interfaces.LookupError:
                     return False
         return True
 
