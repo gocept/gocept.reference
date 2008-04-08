@@ -104,10 +104,7 @@ def ensure_referential_integrity(obj, event):
         gocept.reference.interfaces.IReferenceManager)
     if manager.is_referenced(old_path):
         transaction.doom()
-        raise gocept.reference.interfaces.IntegrityError(
-            "Can't delete or move %r. "
-            "The (sub-)object %r is still being referenced." % 
-            (event.object, obj))
+        raise gocept.reference.interfaces.IntegrityError(event.object, obj)
 
 
 @zope.component.adapter(zope.interface.Interface,

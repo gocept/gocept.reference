@@ -81,9 +81,7 @@ class ReferenceBase(object):
         try:
             target = zope.traversing.api.traverse(self.root, target_key)
         except zope.traversing.interfaces.TraversalError:
-            raise gocept.reference.interfaces.IntegrityError(
-                "Target %r of reference %r no longer exists." %
-                (target_key, self.__name__))
+            raise gocept.reference.interfaces.LookupError(target_key, self)
         return target
 
 
