@@ -15,4 +15,8 @@
     provides="zope.app.generations.interfaces.ISchemaManager"
     component=".generations.manager" />
 
+  <class class=".collection.InstrumentedSet">
+    <allow attributes="__iter__" />
+  </class>
+
 </configure>

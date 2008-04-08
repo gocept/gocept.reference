@@ -115,7 +115,7 @@ True
 >>> del root['jena']
 >>> fuchsturm.city
 Traceback (most recent call last):
-IntegrityError: Target u'/jena' of reference 'city' no longer exists.
+LookupError: Target u'/jena' of reference 'city' no longer exists.
 
 
 Changing the location state of the source
@@ -128,7 +128,7 @@ referential integrity is not given:
 
 >>> root['fuchsturm'] = fuchsturm
 Traceback (most recent call last):
-IntegrityError: Target u'/jena' of reference 'city' no longer exists.
+LookupError: Target u'/jena' of reference 'city' no longer exists.
 
 The transaction was doomed, let's recover the last working state:
 

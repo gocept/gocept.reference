@@ -4,6 +4,8 @@
 # $Id$
 """Reference lists."""
 
+import sets
+
 import persistent
 import transaction
 import zope.traversing.api
@@ -31,7 +33,7 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
         if value is None:
             storage[self.__name__] = None
             return
-        if isinstance(value, set):
+        if isinstance(value, (set, sets.BaseSet)):
             value = InstrumentedSet(value, self)
         elif isinstance(value, InstrumentedSet):
             value._register_collection(self)
