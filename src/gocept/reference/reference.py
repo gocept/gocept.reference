@@ -128,7 +128,7 @@ class Reference(ReferenceBase):
         target_key = self.storage(instance)[self.__name__]
         try:
             self.lookup(target_key)
-        except gocept.reference.interfaces.IntegrityError:
+        except gocept.reference.interfaces.LookupError:
             # _register is called after data structures have been changed.
             transaction.doom()
             raise
