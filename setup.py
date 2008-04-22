@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 name = "gocept.reference"
 setup(
     name = name,
-    version = "0.3dev",
+    version = "0.3",
     author = "gocept gmbh & co. kg",
     author_email = "developers@gocept.com",
     description = "Intrinsic references for Zope/ZODB applications.",
