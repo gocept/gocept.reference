@@ -157,3 +157,17 @@ IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution
 >>> ci.pop().title
 'Cinema'
 >>> del root['cinema']
+
+Updating works:
+
+>>> root['cinema'] = CulturalInstitution('cinema')
+>>> root['theatre'] = CulturalInstitution('theatre')
+>>> ci.update([root['cinema'], root['theatre']])
+>>> len(ci)
+2
+>>> del root['cinema']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+>>> del root['theatre']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.

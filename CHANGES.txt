@@ -7,6 +7,8 @@ Changes
 
 - Moved InstrumentedSet to use BTree data structures for better performance.
 
+- Added `update` method to InstrumentedSet.
+
 
 0.3
 ---

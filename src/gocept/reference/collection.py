@@ -127,6 +127,10 @@ class InstrumentedSet(persistent.Persistent):
         self._data.remove(key)
         self._unregister_key(key)
 
+    def update(self, values):
+        for value in values:
+            self.add(value)
+
     def discard(self, value):
         key = zope.traversing.api.getPath(value)
         if key in self._data:
