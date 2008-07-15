@@ -6,6 +6,7 @@
 
 import sets
 
+import BTrees.OOBTree
 import persistent
 import transaction
 import zope.traversing.api
@@ -64,13 +65,14 @@ class InstrumentedSet(persistent.Persistent):
 
     def __init__(self, src, collection):
         # Convert objects to their keys
-        self._data = set(zope.traversing.api.getPath(item) for item in src)
-        self._referencing_collections = persistent.list.PersistentList()
+        self._data = BTrees.OOBTree.TreeSet(
+            zope.traversing.api.getPath(item) for item in src)
+        self._referencing_collections = BTrees.OOBTree.TreeSet()
         self._register_collection(collection)
 
     def _register_collection(self, collection):
         if collection not in self._referencing_collections:
-            self._referencing_collections.append(collection)
+            self._referencing_collections.insert(collection)
 
     def _unregister_collection(self, collection):
         self._referencing_collections.remove(collection)
@@ -97,11 +99,11 @@ class InstrumentedSet(persistent.Persistent):
 
     @property
     def manager(self):
-        return self._referencing_collections[0].manager
+        return iter(self._referencing_collections).next().manager
 
     @property
     def lookup(self):
-        return self._referencing_collections[0].lookup
+        return iter(self._referencing_collections).next().lookup
 
     def __iter__(self):
         # The referencing collections have enough context to lookup a key, so
@@ -117,30 +119,26 @@ class InstrumentedSet(persistent.Persistent):
 
     def add(self, value):
         key = zope.traversing.api.getPath(value)
-        self._data.add(key)
-        self._p_changed = True
+        self._data.insert(key)
         self._register_key(key)
 
     def remove(self, value):
         key = zope.traversing.api.getPath(value)
         self._data.remove(key)
-        self._p_changed = True
         self._unregister_key(key)
 
     def discard(self, value):
         key = zope.traversing.api.getPath(value)
         if key in self._data:
             self._unregister_key(key)
-        self._data.discard(key)
-        self._p_changed = True
+            self._data.remove(key)
 
     def pop(self):
-        key = self._data.pop()
+        key = iter(self._data).next()
+        self._data.remove(key)
         self._unregister_key(key)
-        self._p_changed = True
         return self.lookup(key)
 
     def clear(self):
         self._unregister_all()
         self._data.clear()
-        self._p_changed = True

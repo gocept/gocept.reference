@@ -2,6 +2,12 @@
 Changes
 =======
 
+0.4
+---
+
+- Moved InstrumentedSet to use BTree data structures for better performance.
+
+
 0.3
 ---
 
