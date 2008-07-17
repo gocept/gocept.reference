@@ -119,8 +119,10 @@ class InstrumentedSet(persistent.Persistent):
 
     def add(self, value):
         key = zope.traversing.api.getPath(value)
-        self._data.insert(key)
-        self._register_key(key)
+        # XXX provide test case for conditional increase
+        if key not in self._data:
+            self._data.insert(key)
+            self._register_key(key)
 
     def remove(self, value):
         key = zope.traversing.api.getPath(value)
