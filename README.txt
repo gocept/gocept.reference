@@ -1,6 +1,3 @@
-============================
-Persistent object references
-============================
 
 This package provides a reference implementation.
 
@@ -13,6 +10,10 @@ The specific properties of this implementation are:
 - modelled partially after relational `foreign keys`
 
 .. contents::
+
+============
+Introduction
+============
 
 Motivation
 ==========

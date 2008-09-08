@@ -2,8 +2,8 @@
 Changes
 =======
 
-0.4
-===
+0.4 (2008-09-08)
+================
 
 - Moved InstrumentedSet to use BTree data structures for better performance.
 
@@ -12,13 +12,13 @@ Changes
 - Updated documentation.
 
 
-0.3
-===
+0.3 (2008-04-22)
+================
 
 - Added a `set` implementation for referencing collections of objects.
 
-0.2
-===
+0.2 (2007-12-21)
+================
 
 - Extended the API for `IReferenceTarget.is_referenced` to allow specifying
   whether to query for references recursively or only on a specific object.
@@ -28,7 +28,7 @@ Changes
   objects could be deleted if they were deleted together with a parent
   location.
 
-0.1
-===
+0.1 (2007-12-20)
+================
 
 Initial release.
