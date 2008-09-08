@@ -12,16 +12,46 @@ For working with references you have to have a located site set:
 >>> root = getRootFolder()
 >>> zope.app.component.hooks.setSite(root)
 
+For demonstation purposes we define two classes, one used for
+referenced objects and defining the reference.
+
+>>> from zope.app.container.contained import Contained
+>>> import gocept.reference
+>>> import zope.interface
+>>> from zope.annotation.interfaces import IAttributeAnnotatable
+
+Classes using references have to implement IAttributeAnnotatable as
+references are stored as annotations:
+
+>>> class Address(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     city = gocept.reference.Reference()
+
+>>> class City(Contained):
+...     pass
+
+As instances derived from the classes defined above cannot be
+persisted (doctest issue) we import the classes again from a python
+file:
+
 >>> from gocept.reference.tests import Address, City
 
->>> root['dessau'] = City('Dessau', '06844')
->>> root['halle'] = City('Halle', '06110')
->>> root['jena'] = City('Jena', '07743')
+The referenced objects must be stored in the ZODB and must be located:
 
->>> theuni = Address('Christian Theune', root['dessau'])
+>>> root['dessau'] = City()
+>>> root['halle'] = City()
+>>> root['jena'] = City()
 
+To reference an object it is only necessary to assign the object to
+the attribute which is the reference:
+
+>>> theuni = Address()
+>>> theuni.city = root['dessau']
 >>> theuni.city
 <gocept.reference.tests.City object at 0x...>
+
+It is also possible to assign `None` to let the reference point to no
+object:
 
 >>> theuni.city = None
 >>> print theuni.city
@@ -45,15 +75,19 @@ TypeError: ...
 Integrity-ensured references
 ============================
 
+>>> class Monument(Contained):
+...      zope.interface.implements(IAttributeAnnotatable)
+...      city = gocept.reference.Reference(ensure_integrity=True)
 >>> from gocept.reference.tests import Monument
 
 Located source
 --------------
 
-Referential integrity can be ensured iff the source of the reference is
-located:
+Referential integrity can be ensured whether the source of the
+reference is located:
 
->>> root['fuchsturm'] = Monument('Fuchsturm', root['dessau'])
+>>> root['fuchsturm'] = Monument()
+>>> root['fuchsturm'].city = root['dessau']
 >>> root['fuchsturm'].city is root['dessau']
 True
 
@@ -75,8 +109,10 @@ DoomedTransaction
 >>> 'dessau' in root
 True
 
->>> from gocept.reference.interfaces import IReferenceTarget
+To check whether an object is referenced, it can be adapted to
+IReferenceTarget:
 
+>>> from gocept.reference.interfaces import IReferenceTarget
 >>> IReferenceTarget(root['dessau']).is_referenced()
 True
 
@@ -99,7 +135,8 @@ Non-located source
 If the source of a reference is not located, we can do anything we want with
 references, including breaking them:
 
->>> fuchsturm = Monument('Fuchsturm', root['jena'])
+>>> fuchsturm = Monument()
+>>> fuchsturm.city =  root['jena']
 >>> fuchsturm.city is root['jena']
 True
 
@@ -176,8 +213,10 @@ integrity is also forbidden:
 
 >>> import zope.app.container.sample
 >>> root['folder'] = zope.app.container.sample.SampleContainer()
->>> root['folder']['frankfurt'] = City('Frankfurt', '12345')
->>> root['messeturm'] = Monument('Messeturm', root['folder']['frankfurt'])
+>>> root['folder']['frankfurt'] = City()
+>>> messeturm = Monument()
+>>> messeturm.city = root['folder']['frankfurt']
+>>> root['messeturm'] = messeturm
 
 Deleting the `folder` will fail now, because a subobject is being referenced.
 The reference target API (IReferenceTarget) allows us to inspect it
