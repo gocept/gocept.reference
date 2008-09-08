@@ -12,18 +12,37 @@ or removed from the set:
 >>> root = getRootFolder()
 >>> zope.app.component.hooks.setSite(root)
 
-Initially, the collection isn't set and accessing it causes an AttributeError:
+We need a class defining a ReferenceCollection. (Importing the class
+from the test module is necassary to persist instances of the class):
 
+>>> from zope.app.container.contained import Contained
+>>> import gocept.reference
+>>> import zope.interface
+>>> from zope.annotation.interfaces import IAttributeAnnotatable
+
+>>> class City(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     cultural_institutions = gocept.reference.ReferenceCollection(
+...         ensure_integrity=True)
 >>> from gocept.reference.tests import City
->>> halle = City('Halle', '06112')
+
+Initially, the collection isn't set and accessing it causes an
+AttributeError:
+
+>>> halle = City()
 >>> halle.cultural_institutions
 Traceback (most recent call last):
 AttributeError: cultural_institutions
 
+So we define some cultural institutions:
+
+>>> class CulturalInstitution(Contained):
+...     title = None
 >>> from gocept.reference.tests import CulturalInstitution
->>> root['theatre'] = CulturalInstitution('Theatre')
->>> root['cinema'] = CulturalInstitution('Cinema')
->>> root['park'] = CulturalInstitution('Park')
+
+>>> root['theatre'] = CulturalInstitution()
+>>> root['cinema'] = CulturalInstitution()
+>>> root['park'] = CulturalInstitution()
 >>> import transaction
 >>> transaction.commit()
 
@@ -47,7 +66,8 @@ Assigning a set works:
 [<gocept.reference.tests.CulturalInstitution object at 0x...>,
  <gocept.reference.tests.CulturalInstitution object at 0x...>]
 
-As `halle` isn't located yet, the integrity ensurance doesn't notice referenced objects being deleted:
+As `halle` isn't located yet, the integrity ensurance doesn't notice
+referenced objects being deleted:
 
 >>> del root['cinema']
 
@@ -107,7 +127,7 @@ sets with individual items just as the normal `set` API allows us to do.
 
 We'll start out with an empty set:
 
->>> root['jena'] = City('Jena', '07743')
+>>> root['jena'] = City()
 >>> root['jena'].cultural_institutions = set()
 
 Our reference engine turns this set into a different object which manages the
@@ -129,7 +149,7 @@ Removing and discarding works:
 
 >>> ci.remove(root['park'])
 >>> del root['park']
->>> root['park'] = CulturalInstitution('Park')
+>>> root['park'] = CulturalInstitution()
 >>> ci.add(root['park'])
 >>> del root['park']
 Traceback (most recent call last):
@@ -149,7 +169,8 @@ IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution
 0
 >>> del root['theatre']
 
->>> root['cinema'] = CulturalInstitution('Cinema')
+>>> root['cinema'] = CulturalInstitution()
+>>> root['cinema'].title = 'Cinema'
 >>> ci.add(root['cinema'])
 >>> del root['cinema']
 Traceback (most recent call last):
@@ -160,8 +181,8 @@ IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution
 
 Updating works:
 
->>> root['cinema'] = CulturalInstitution('cinema')
->>> root['theatre'] = CulturalInstitution('theatre')
+>>> root['cinema'] = CulturalInstitution()
+>>> root['theatre'] = CulturalInstitution()
 >>> ci.update([root['cinema'], root['theatre']])
 >>> len(ci)
 2

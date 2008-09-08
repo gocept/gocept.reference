@@ -1,22 +1,46 @@
 # vim:fileencoding=utf-8
 # Copyright (c) 2007 gocept gmbh & co. kg
 # See also LICENSE.txt
-# $Id$
 
+import os.path
 from setuptools import setup, find_packages
 
 
+def read(filename):
+    path = os.path.join('src', 'gocept', 'reference', filename)
+    return file(path).read()
+
+
 name = "gocept.reference"
+version = "0.4dev"
+
 setup(
     name = name,
-    version = "0.4dev",
+    version = version,
     author = "gocept gmbh & co. kg",
     author_email = "developers@gocept.com",
     description = "Intrinsic references for Zope/ZODB applications.",
-    long_description = open('README.txt').read(),
+    long_description = (
+        open('README.txt').read() + "\n\n" +
+        read('reference.txt') + "\n\n" + 
+        read('collection.txt') + "\n\n" + 
+        open('CHANGES.txt').read()),
     license = "ZPL 2.1",
     keywords = "zodb zope3",
-    zip_safe=False,
+    classifiers = (
+        "Topic :: Software Development",
+        "Topic :: Database",
+        "Framework :: ZODB",
+        "Framework :: Zope3",
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved",
+        "License :: OSI Approved :: Zope Public License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        ),
+    zip_safe = False,
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
@@ -32,5 +56,5 @@ setup(
                         ],
     extras_require = {
         'test': ['zope.app.testing']
-    },
+        },
     )

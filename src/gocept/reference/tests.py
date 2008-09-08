@@ -23,10 +23,6 @@ class Address(Contained):
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
 
-    def __init__(self, name, city):
-        self.name = name
-        self.city = city
-
 
 class City(Contained):
 
@@ -36,10 +32,6 @@ class City(Contained):
     cultural_institutions = gocept.reference.ReferenceCollection(
         ensure_integrity=True)
 
-    def __init__(self, name, zip):
-        self.name = name
-        self.zip = zip
-
 
 class Monument(Contained):
 
@@ -48,16 +40,9 @@ class Monument(Contained):
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
 
-    def __init__(self, name, city):
-        self.name = name
-        self.city = city
-
 
 class CulturalInstitution(Contained):
-
-    def __init__(self, title):
-      self.title = title
-
+    title = None
 
 ftesting_zcml = os.path.join(
     os.path.dirname(__file__), 'ftesting.zcml')
