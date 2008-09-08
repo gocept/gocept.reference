@@ -205,7 +205,7 @@ True
 >>> 'halle' in root
 False
 
-Hierarchіcal structures
+Hierarchical structures
 -----------------------
 
 Trying to delete objects that contain referenced objects with ensured
