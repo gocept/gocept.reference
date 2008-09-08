@@ -19,6 +19,7 @@ setup(
     version = version,
     author = "gocept gmbh & co. kg",
     author_email = "developers@gocept.com",
+    url = 'http://pypi.python.org/pypi/gocept.reference',
     description = "Intrinsic references for Zope/ZODB applications.",
     long_description = (
         open('README.txt').read() + "\n\n" +
