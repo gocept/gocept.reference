@@ -18,10 +18,10 @@ import gocept.reference
 
 class Address(Contained):
 
-    city = gocept.reference.Reference()
-
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
+
+    city = gocept.reference.Reference()
 
 
 class City(Contained):
@@ -35,10 +35,10 @@ class City(Contained):
 
 class Monument(Contained):
 
-    city = gocept.reference.Reference(ensure_integrity=True)
-
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
+
+    city = gocept.reference.Reference(ensure_integrity=True)
 
 
 class CulturalInstitution(Contained):
@@ -53,6 +53,7 @@ def test_suite():
     suite = FunctionalDocFileSuite(
       'reference.txt',
       'collection.txt',
+      'verify.txt',
       optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
     suite.layer = FunctionalLayer
     return suite

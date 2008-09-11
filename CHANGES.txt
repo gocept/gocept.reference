@@ -5,7 +5,8 @@ Changes
 0.5 (unreleased)
 ================
 
--
+- Added specialized variant of zope.interface.verify.verifyObject
+  which can handle references and reference collections correctly.
 
 
 0.4 (2008-09-08)

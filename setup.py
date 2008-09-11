@@ -14,6 +14,7 @@ def read(filename):
 name = "gocept.reference"
 version = "0.5dev"
 
+
 setup(
     name = name,
     version = version,
@@ -25,6 +26,7 @@ setup(
         open('README.txt').read() + "\n\n" +
         read('reference.txt') + "\n\n" + 
         read('collection.txt') + "\n\n" + 
+        read('verify.txt') + "\n\n" + 
         open('CHANGES.txt').read()),
     license = "ZPL 2.1",
     keywords = "zodb zope3",
