@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.5 (unreleased)
+0.5 (2008-09-11)
 ================
 
 - Added specialized variant of zope.interface.verify.verifyObject
