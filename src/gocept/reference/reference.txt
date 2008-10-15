@@ -2,7 +2,6 @@
 Referencing objects
 ===================
 
-
 Simple references
 =================
 
@@ -12,16 +11,14 @@ For working with references you have to have a located site set:
 >>> root = getRootFolder()
 >>> zope.app.component.hooks.setSite(root)
 
-For demonstation purposes we define two classes, one used for
-referenced objects and defining the reference.
+For demonstration purposes we define two classes, one for referenced objects,
+the other defining the reference. Classes using references have to implement
+IAttributeAnnotatable as references are stored as annotations:
 
 >>> from zope.app.container.contained import Contained
 >>> import gocept.reference
 >>> import zope.interface
 >>> from zope.annotation.interfaces import IAttributeAnnotatable
-
-Classes using references have to implement IAttributeAnnotatable as
-references are stored as annotations:
 
 >>> class Address(Contained):
 ...     zope.interface.implements(IAttributeAnnotatable)
@@ -30,9 +27,8 @@ references are stored as annotations:
 >>> class City(Contained):
 ...     pass
 
-As instances derived from the classes defined above cannot be
-persisted (doctest issue) we import the classes again from a python
-file:
+As instances of classes defined in a doctest cannot be persisted, we import
+implementations of the classes from a real Python module:
 
 >>> from gocept.reference.tests import Address, City
 
@@ -42,8 +38,8 @@ The referenced objects must be stored in the ZODB and must be located:
 >>> root['halle'] = City()
 >>> root['jena'] = City()
 
-To reference an object it is only necessary to assign the object to
-the attribute which is the reference:
+In order to reference an object, the object only needs to be assigned to the
+attribute implemented as a reference descriptor:
 
 >>> theuni = Address()
 >>> theuni.city = root['dessau']
@@ -57,14 +53,14 @@ object:
 >>> print theuni.city
 None
 
-Values can be deleted, the property raises an AttributeError then:
+Values can be deleted, the descriptor raises an AttributeError then:
 
 >>> del theuni.city
 >>> theuni.city
 Traceback (most recent call last):
 AttributeError: city
 
-Only contained objects can be assigned to a reference property that has
+Only contained objects can be assigned to a reference that has
 integrity ensurance enabled:
 
 >>> theuni.city = 12
@@ -83,8 +79,8 @@ Integrity-ensured references
 Located source
 --------------
 
-Referential integrity can be ensured whether the source of the
-reference is located:
+Referential integrity can be ensured if the source of the reference is
+located:
 
 >>> root['fuchsturm'] = Monument()
 >>> root['fuchsturm'].city = root['dessau']
