@@ -1,7 +1,5 @@
-# vim:fileencoding=utf-8
-# Copyright (c) 2007 gocept gmbh & co. kg
+# Copyright (c) 2007-2008 gocept gmbh & co. kg
 # See also LICENSE.txt
-# $Id$
 """Install the reference package."""
 
 import zope.app.zopeappgenerations
@@ -14,6 +12,8 @@ def evolve(context):
     # Install the reference manager utility into the root site.
     root = zope.app.zopeappgenerations.getRootFolder(context)
     sm = root.getSiteManager()
-    sm['gocept.reference'] = gocept.reference.manager.ReferenceManager()
-    sm.registerUtility(sm['gocept.reference'],
-                       provided=gocept.reference.interfaces.IReferenceManager)
+    if 'gocept.reference' not in sm:
+        sm['gocept.reference'] = gocept.reference.manager.ReferenceManager()
+        sm.registerUtility(
+            sm['gocept.reference'],
+            provided=gocept.reference.interfaces.IReferenceManager)
