@@ -2,10 +2,11 @@
 Changes
 =======
 
-0.6 (unreleased)
-================
+0.5.2 (2008-10-16)
+==================
 
-- 
+- Fixed: When upgrading gocept.reference to version 0.5.1, a
+  duplication error was raised.
 
 
 0.5.1 (2008-10-10)
