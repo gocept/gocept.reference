@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007 gocept gmbh & co. kg
+# Copyright (c) 2007-2008 gocept gmbh & co. kg
 # See also LICENSE.txt
 
 import os.path
@@ -29,7 +29,7 @@ setup(
         read('verify.txt') + "\n\n" + 
         open('CHANGES.txt').read()),
     license = "ZPL 2.1",
-    keywords = "zodb zope3",
+    keywords = "zodb zope3 intrinsic reference",
     classifiers = (
         "Topic :: Software Development",
         "Topic :: Database",
