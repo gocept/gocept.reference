@@ -44,6 +44,12 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
         storage[self.__name__] = value
         self._register(instance)
 
+    def reference(self, instance, target):
+        getattr(instance, self.__name__).add(target)
+
+    def unreference(self, instance, target):
+        getattr(instance, self.__name__).discard(target)
+
     def _unregister(self, instance):
         if not self.needs_registration(instance):
             return

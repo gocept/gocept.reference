@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007 gocept gmbh & co. kg
+# Copyright (c) 2007-2009 gocept gmbh & co. kg
 # See also LICENSE.txt
 # $Id$
 """References to persistent objects."""
@@ -39,9 +39,11 @@ def find_name(method):
 class ReferenceBase(object):
     """A base class for specific references."""
 
-    def __init__(self, __name__=None, ensure_integrity=False):
+    def __init__(self, __name__=None, ensure_integrity=False,
+                 back_reference=None):
         self.__name__ = __name__
         self.ensure_integrity = ensure_integrity
+        self.back_reference = back_reference
 
     @find_name
     def __delete__(self, instance):
@@ -103,14 +105,31 @@ class Reference(ReferenceBase):
 
     @find_name
     def __set__(self, instance, value):
+        if self.back_reference:
+            old_target = getattr(instance, self.__name__, None)
+            if old_target is not None:
+                other = self.manager.lookup_backreference(
+                    old_target, self.back_reference)
+                other.unreference(old_target, instance)
+        self.reference(instance, value)
+        if self.back_reference:
+            other = self.manager.lookup_backreference(
+                value, self.back_reference)
+            other.reference(value, instance)
+
+    @find_name
+    def reference(self, instance, target):
         self._unregister(instance)
         storage = self.storage(instance)
-        if value is None:
+        if target is None:
             storage[self.__name__] = None
             return
-        target = zope.traversing.api.getPath(value)
+        target = zope.traversing.api.getPath(target)
         storage[self.__name__] = target
         self._register(instance)
+
+    def unreference(self, instance, target):
+        self.reference(instance, None)
 
     # Helper methods
 

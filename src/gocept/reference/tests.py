@@ -44,6 +44,23 @@ class Monument(Contained):
 class CulturalInstitution(Contained):
     title = None
 
+
+class Man(Contained):
+
+    zope.interface.implements(
+        zope.annotation.interfaces.IAttributeAnnotatable)
+
+    wife = gocept.reference.Reference(back_reference='marriage')
+
+
+class Woman(Contained):
+
+    zope.interface.implements(
+        zope.annotation.interfaces.IAttributeAnnotatable)
+
+    husband = gocept.reference.Reference(back_reference='marriage')
+
+
 ftesting_zcml = os.path.join(
     os.path.dirname(__file__), 'ftesting.zcml')
 FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
@@ -52,6 +69,7 @@ FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
 def test_suite():
     suite = FunctionalDocFileSuite(
       'reference.txt',
+      'backref.txt',
       'collection.txt',
       'verify.txt',
       optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
