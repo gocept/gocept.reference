@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007 gocept gmbh & co. kg
+# Copyright (c) 2007-2009 gocept gmbh & co. kg
 # See also LICENSE.txt
 # $Id$
 """Interface specifications for gocept.reference."""
@@ -55,3 +55,11 @@ class IReferenceManager(zope.interface.Interface):
 
     def is_referenced(target):
         """Tell whether the given target is being referenced."""
+
+    def lookup_backreference(target, ref_name):
+        """Return the reference descriptor used to establish a bidirectional
+        reference with the given reference name.
+
+        Raises LookupError if more or less than one descriptor matches.
+
+        """
