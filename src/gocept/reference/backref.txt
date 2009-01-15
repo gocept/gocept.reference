@@ -1,0 +1,72 @@
+===============
+Back-references
+===============
+
+Simple back-references
+======================
+
+For working with references you have to have a located site set:
+
+>>> import zope.app.component.hooks
+>>> root = getRootFolder()
+>>> zope.app.component.hooks.setSite(root)
+
+For demonstration purposes we define two classes, one for referenced objects,
+the other defining the reference. Classes using references have to implement
+IAttributeAnnotatable as references are stored as annotations:
+
+>>> from zope.app.container.contained import Contained
+>>> import gocept.reference
+>>> import zope.interface
+>>> from zope.annotation.interfaces import IAttributeAnnotatable
+
+>>> class Man(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     wife = gocept.reference.Reference(back_reference='marriage')
+
+>>> class Woman(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     husband = gocept.reference.Reference(back_reference='marriage')
+
+As instances of classes defined in a doctest cannot be made persistent, we
+import implementations of the classes from a real Python module:
+
+>>> from gocept.reference.tests import Man, Woman
+
+The referenced objects must be stored in the ZODB and must be located:
+
+>>> john = root['john'] = Man()
+>>> jane = root['jane'] = Woman()
+
+In order to establish a pair of reference and back-reference, it is sufficient
+to assign one of the two objects in question to the reference attribute:
+
+>>> john.wife = jane
+>>> john.wife is jane
+True
+>>> jane.husband is john
+True
+
+Back-references will be kept consistent when changing one of the two
+references:
+
+>>> lilly = root['lilly'] = Woman()
+>>> john.wife = lilly
+>>> john.wife is lilly
+True
+>>> lilly.husband is john
+True
+>>> jane.husband is None
+True
+
+This also works if one of the two references is changed implicitly by the
+back-reference mechanism:
+
+>>> jane.husband = john
+>>> jane.husband is john
+True
+>>> john.wife is jane
+True
+>>> lilly.husband is None
+True
+
