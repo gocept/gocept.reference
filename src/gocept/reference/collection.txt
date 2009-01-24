@@ -24,7 +24,7 @@ from the test module is necassary to persist instances of the class):
 ...     zope.interface.implements(IAttributeAnnotatable)
 ...     cultural_institutions = gocept.reference.ReferenceCollection(
 ...         ensure_integrity=True)
->>> from gocept.reference.tests import City
+>>> from gocept.reference.testing import City
 
 Initially, the collection isn't set and accessing it causes an
 AttributeError:
@@ -38,7 +38,7 @@ So we define some cultural institutions:
 
 >>> class CulturalInstitution(Contained):
 ...     title = None
->>> from gocept.reference.tests import CulturalInstitution
+>>> from gocept.reference.testing import CulturalInstitution
 
 >>> root['theatre'] = CulturalInstitution()
 >>> root['cinema'] = CulturalInstitution()
@@ -51,7 +51,7 @@ TypeError:
 
 >>> halle.cultural_institutions = root['park']
 Traceback (most recent call last):
-TypeError: <gocept.reference.tests.CulturalInstitution object at 0x...> can't be assigned as a reference collection: only sets are allowed.
+TypeError: <gocept.reference.testing.CulturalInstitution object at 0x...> can't be assigned as a reference collection: only sets are allowed.
 
 
 Managing whole sets
@@ -63,8 +63,8 @@ Assigning a set works:
 >>> len(halle.cultural_institutions)
 2
 >>> list(halle.cultural_institutions)
-[<gocept.reference.tests.CulturalInstitution object at 0x...>,
- <gocept.reference.tests.CulturalInstitution object at 0x...>]
+[<gocept.reference.testing.CulturalInstitution object at 0x...>,
+ <gocept.reference.testing.CulturalInstitution object at 0x...>]
 
 As `halle` isn't located yet, the integrity ensurance doesn't notice
 referenced objects being deleted:
@@ -98,8 +98,8 @@ events:
 The cinema is back now, and Halle is in an operational state again:
 
 >>> list(halle.cultural_institutions)
-[<gocept.reference.tests.CulturalInstitution object at 0x...>,
- <gocept.reference.tests.CulturalInstitution object at 0x...>]
+[<gocept.reference.testing.CulturalInstitution object at 0x...>,
+ <gocept.reference.testing.CulturalInstitution object at 0x...>]
 
 Now we can add it to the database:
 
@@ -109,7 +109,7 @@ And deleting a referenced object will cause an error:
 
 >>> del root['cinema']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 
 When we remove the referencing collection, the target can be deleted again:
 
@@ -143,7 +143,7 @@ integrity is ensured:
 >>> ci.add(root['park'])
 >>> del root['park']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 
 Removing and discarding works:
 
@@ -153,7 +153,7 @@ Removing and discarding works:
 >>> ci.add(root['park'])
 >>> del root['park']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> ci.discard(root['park'])
 >>> del root['park']
 >>> ci.discard(root['halle'])
@@ -163,7 +163,7 @@ Clearing works:
 >>> ci.add(root['theatre'])
 >>> del root['theatre']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> ci.clear()
 >>> len(ci)
 0
@@ -174,7 +174,7 @@ IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution
 >>> ci.add(root['cinema'])
 >>> del root['cinema']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> ci.pop().title
 'Cinema'
 >>> del root['cinema']
@@ -188,7 +188,7 @@ Updating works:
 2
 >>> del root['cinema']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> del root['theatre']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
