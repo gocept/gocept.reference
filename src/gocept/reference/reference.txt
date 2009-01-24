@@ -30,7 +30,7 @@ IAttributeAnnotatable as references are stored as annotations:
 As instances of classes defined in a doctest cannot be persisted, we import
 implementations of the classes from a real Python module:
 
->>> from gocept.reference.tests import Address, City
+>>> from gocept.reference.testing import Address, City
 
 The referenced objects must be stored in the ZODB and must be located:
 
@@ -44,7 +44,7 @@ attribute implemented as a reference descriptor:
 >>> theuni = Address()
 >>> theuni.city = root['dessau']
 >>> theuni.city
-<gocept.reference.tests.City object at 0x...>
+<gocept.reference.testing.City object at 0x...>
 
 It is also possible to assign `None` to let the reference point to no
 object:
@@ -74,7 +74,7 @@ Integrity-ensured references
 >>> class Monument(Contained):
 ...      zope.interface.implements(IAttributeAnnotatable)
 ...      city = gocept.reference.Reference(ensure_integrity=True)
->>> from gocept.reference.tests import Monument
+>>> from gocept.reference.testing import Monument
 
 Located source
 --------------
@@ -93,8 +93,8 @@ True
 >>> del root['dessau']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move
-  <gocept.reference.tests.City object at 0x...>.
-  The (sub-)object <gocept.reference.tests.City object at 0x...> is
+  <gocept.reference.testing.City object at 0x...>.
+  The (sub-)object <gocept.reference.testing.City object at 0x...> is
   still being referenced.
 
 >>> transaction.commit()
@@ -230,7 +230,7 @@ False
 Traceback (most recent call last):
 IntegrityError: Can't delete or move
   <zope.app.container.sample.SampleContainer object at 0x...>.
-  The (sub-)object <gocept.reference.tests.City object at 0x...> is still
+  The (sub-)object <gocept.reference.testing.City object at 0x...> is still
   being referenced.
 
 
