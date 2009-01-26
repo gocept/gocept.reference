@@ -40,8 +40,12 @@ class IReferenceSource(zope.interface.Interface):
 class IReferenceTarget(zope.interface.Interface):
     """Interact with an object that may be referenced."""
 
-    def is_referenced():
-        """Tell whether any references to the object exist."""
+    def is_referenced(recursive=True):
+        """Tell whether any references to the object exist.
+
+        If `recursive` is True, also sub-objects of the reference
+        target are checked for references.
+        """
 
 
 class IReferenceManager(zope.interface.Interface):
