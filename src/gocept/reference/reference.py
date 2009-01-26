@@ -115,7 +115,16 @@ class Reference(ReferenceBase):
         if self.back_reference:
             other = self.manager.lookup_backreference(
                 value, self.back_reference)
+            value_old_target = getattr(value, other.name(value), None)
+            if value_old_target is not None:
+                other_other = self.manager.lookup_backreference(
+                    value_old_target, self.back_reference)
+                other_other.unreference(value_old_target, value)
             other.reference(value, instance)
+
+    @find_name
+    def name(self, instance):
+        return self.__name__
 
     @find_name
     def reference(self, instance, target):
