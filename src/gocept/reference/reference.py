@@ -1,7 +1,6 @@
 # vim:fileencoding=utf-8
 # Copyright (c) 2007-2009 gocept gmbh & co. kg
 # See also LICENSE.txt
-# $Id$
 """References to persistent objects."""
 
 import transaction
@@ -16,7 +15,7 @@ import gocept.reference.interfaces
 
 
 def find_name(method):
-    """Tries to determine the name of the property in the instance's 
+    """Tries to determine the name of the property in the instance's
     class.
 
     The result is cached during the runtime of the process.

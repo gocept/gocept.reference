@@ -1,77 +1,42 @@
 # -*- coding: latin-1 -*-
-# Copyright (c) 2007 gocept gmbh & co. kg
+# Copyright (c) 2007-2009 gocept gmbh & co. kg
 # See also LICENSE.txt
-# $Id$
-""" XXX """
+"""Tests for gocept.reference"""
 
 import unittest
-import doctest
-import os.path
+import zope.app.testing.functional
+import zope.interface.verify
 
-import zope.interface
-import zope.annotation.interfaces
-from zope.app.testing.functional import FunctionalDocFileSuite, ZCMLLayer
-from zope.app.container.contained import Contained
-
-import gocept.reference
+import gocept.reference.content
+import gocept.reference.interfaces
+import gocept.reference.manager
+import gocept.reference.testing
 
 
-class Address(Contained):
+class TestInterfaces(unittest.TestCase):
 
-    zope.interface.implements(
-        zope.annotation.interfaces.IAttributeAnnotatable)
+    def test_IReferenceSource(self):
+        zope.interface.verify.verifyObject(
+            gocept.reference.interfaces.IReferenceSource,
+            gocept.reference.content.ReferenceSource(object))
 
-    city = gocept.reference.Reference()
+    def test_IReferenceTarget(self):
+        zope.interface.verify.verifyObject(
+            gocept.reference.interfaces.IReferenceTarget,
+            gocept.reference.content.ReferenceTarget(object))
 
-
-class City(Contained):
-
-    zope.interface.implements(
-        zope.annotation.interfaces.IAttributeAnnotatable)
-
-    cultural_institutions = gocept.reference.ReferenceCollection(
-        ensure_integrity=True)
-
-
-class Monument(Contained):
-
-    zope.interface.implements(
-        zope.annotation.interfaces.IAttributeAnnotatable)
-
-    city = gocept.reference.Reference(ensure_integrity=True)
-
-
-class CulturalInstitution(Contained):
-    title = None
-
-
-class Man(Contained):
-
-    zope.interface.implements(
-        zope.annotation.interfaces.IAttributeAnnotatable)
-
-    wife = gocept.reference.Reference(back_reference='marriage')
-
-
-class Woman(Contained):
-
-    zope.interface.implements(
-        zope.annotation.interfaces.IAttributeAnnotatable)
-
-    husband = gocept.reference.Reference(back_reference='marriage')
-
-
-ftesting_zcml = os.path.join(
-    os.path.dirname(__file__), 'ftesting.zcml')
-FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
-
+    def test_IReferenceManager(self):
+        zope.interface.verify.verifyObject(
+            gocept.reference.interfaces.IReferenceManager,
+            gocept.reference.manager.ReferenceManager())
 
 def test_suite():
-    suite = FunctionalDocFileSuite(
-      'reference.txt',
-      'backref.txt',
-      'collection.txt',
-      'verify.txt',
-      optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
-    suite.layer = FunctionalLayer
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestInterfaces))
+    suite.addTest(gocept.reference.testing.FunctionalDocFileSuite(
+            'reference.txt',
+            'backref.txt',
+            'collection.txt',
+            'verify.txt',
+            ))
     return suite

@@ -31,7 +31,7 @@ IAttributeAnnotatable as references are stored as annotations:
 As instances of classes defined in a doctest cannot be made persistent, we
 import implementations of the classes from a real Python module:
 
->>> from gocept.reference.tests import Man, Woman
+>>> from gocept.reference.testing import Man, Woman
 
 The referenced objects must be stored in the ZODB and must be located:
 
