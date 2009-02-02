@@ -70,3 +70,16 @@ True
 >>> lilly.husband is None
 True
 
+If a back-reference attribute is set to None, the back-reference on the
+previously set reference target is set to None as well:
+
+>>> john.wife = None
+>>> john.wife is None
+True
+>>> jane.husband is None
+True
+
+
+.. Local Variables:
+.. mode: rst
+.. End:

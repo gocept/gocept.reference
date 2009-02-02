@@ -111,7 +111,7 @@ class Reference(ReferenceBase):
                     old_target, self.back_reference)
                 other.unreference(old_target, instance)
         self.reference(instance, value)
-        if self.back_reference:
+        if self.back_reference and value is not None:
             other = self.manager.lookup_backreference(
                 value, self.back_reference)
             value_old_target = getattr(value, other.name(value), None)
