@@ -8,9 +8,9 @@ collection you can use a ReferenceCollection property.
 A collection behaves like a set and manages references while objects are added
 or removed from the set:
 
->>> import zope.app.component.hooks
+>>> import zope.site.hooks
 >>> root = getRootFolder()
->>> zope.app.component.hooks.setSite(root)
+>>> zope.site.hooks.setSite(root)
 
 We need a class defining a ReferenceCollection. (Importing the class
 from the test module is necassary to persist instances of the class):

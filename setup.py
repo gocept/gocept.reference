@@ -56,7 +56,7 @@ setup(
                         'zope.traversing',
                         'zope.deferredimport',
                         'zope.container',
-                        'zope.app.component',
+                        'zope.site',
                         'zope.app.generations',
                         'zope.app.zopeappgenerations',
                         ],
