@@ -7,9 +7,9 @@ Simple references
 
 For working with references you have to have a located site set:
 
->>> import zope.app.component.hooks
+>>> import zope.site.hooks
 >>> root = getRootFolder()
->>> zope.app.component.hooks.setSite(root)
+>>> zope.site.hooks.setSite(root)
 
 For demonstration purposes we define two classes, one for referenced objects,
 the other defining the reference. Classes using references have to implement
