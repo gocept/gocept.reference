@@ -15,7 +15,7 @@ or removed from the set:
 We need a class defining a ReferenceCollection. (Importing the class
 from the test module is necassary to persist instances of the class):
 
->>> from zope.app.container.contained import Contained
+>>> from zope.container.contained import Contained
 >>> import gocept.reference
 >>> import zope.interface
 >>> from zope.annotation.interfaces import IAttributeAnnotatable

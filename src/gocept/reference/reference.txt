@@ -15,7 +15,7 @@ For demonstration purposes we define two classes, one for referenced objects,
 the other defining the reference. Classes using references have to implement
 IAttributeAnnotatable as references are stored as annotations:
 
->>> from zope.app.container.contained import Contained
+>>> from zope.container.contained import Contained
 >>> import gocept.reference
 >>> import zope.interface
 >>> from zope.annotation.interfaces import IAttributeAnnotatable
@@ -207,8 +207,8 @@ Hierarchical structures
 Trying to delete objects that contain referenced objects with ensured
 integrity is also forbidden:
 
->>> import zope.app.container.sample
->>> root['folder'] = zope.app.container.sample.SampleContainer()
+>>> import zope.container.sample
+>>> root['folder'] = zope.container.sample.SampleContainer()
 >>> root['folder']['frankfurt'] = City()
 >>> messeturm = Monument()
 >>> messeturm.city = root['folder']['frankfurt']
@@ -229,7 +229,7 @@ False
 >>> del root['folder']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move
-  <zope.app.container.sample.SampleContainer object at 0x...>.
+  <zope.container.sample.SampleContainer object at 0x...>.
   The (sub-)object <gocept.reference.testing.City object at 0x...> is still
   being referenced.
 
