@@ -49,6 +49,7 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['gocept'],
     install_requires = ['setuptools',
+                        'transaction',
                         'ZODB3',
                         'zope.interface',
                         'zope.component',
