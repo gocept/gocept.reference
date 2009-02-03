@@ -5,7 +5,7 @@
 import doctest
 import os.path
 import zope.annotation.interfaces
-import zope.app.container.contained
+import zope.container.contained
 import zope.app.testing.functional
 import zope.interface
 
@@ -26,7 +26,7 @@ def FunctionalDocFileSuite(*paths, **kw):
     return suite
 
 
-class Address(zope.app.container.contained.Contained):
+class Address(zope.container.contained.Contained):
 
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
@@ -34,7 +34,7 @@ class Address(zope.app.container.contained.Contained):
     city = gocept.reference.Reference()
 
 
-class City(zope.app.container.contained.Contained):
+class City(zope.container.contained.Contained):
 
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
@@ -43,7 +43,7 @@ class City(zope.app.container.contained.Contained):
         ensure_integrity=True)
 
 
-class Monument(zope.app.container.contained.Contained):
+class Monument(zope.container.contained.Contained):
 
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
@@ -51,11 +51,11 @@ class Monument(zope.app.container.contained.Contained):
     city = gocept.reference.Reference(ensure_integrity=True)
 
 
-class CulturalInstitution(zope.app.container.contained.Contained):
+class CulturalInstitution(zope.container.contained.Contained):
     title = None
 
 
-class Man(zope.app.container.contained.Contained):
+class Man(zope.container.contained.Contained):
 
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)
@@ -63,7 +63,7 @@ class Man(zope.app.container.contained.Contained):
     wife = gocept.reference.Reference(back_reference='marriage')
 
 
-class Woman(zope.app.container.contained.Contained):
+class Woman(zope.container.contained.Contained):
 
     zope.interface.implements(
         zope.annotation.interfaces.IAttributeAnnotatable)

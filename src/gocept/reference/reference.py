@@ -6,7 +6,7 @@
 import transaction
 from persistent.dict import PersistentDict
 
-import zope.app.component.hooks
+import zope.site.hooks
 import zope.annotation.interfaces
 import zope.traversing.interfaces
 import zope.traversing.api
@@ -56,7 +56,7 @@ class ReferenceBase(object):
 
     @property
     def root(self):
-        site = zope.app.component.hooks.getSite()
+        site = zope.site.hooks.getSite()
         locatable = zope.traversing.interfaces.IPhysicallyLocatable(site)
         return locatable.getRoot()
 
