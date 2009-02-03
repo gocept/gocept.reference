@@ -55,7 +55,7 @@ setup(
                         'zope.annotation',
                         'zope.traversing',
                         'zope.deferredimport',
-                        'zope.app.container',
+                        'zope.container',
                         'zope.app.component',
                         'zope.app.generations',
                         'zope.app.zopeappgenerations',

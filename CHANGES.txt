@@ -5,7 +5,8 @@ Changes
 0.6 (unreleased)
 ================
 
-- 
+- Take advantage of the simpler zope package dependencies achieved at the Grok
+  cave sprint in January 2009.
 
 
 0.5.2 (2008-10-16)
