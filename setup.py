@@ -56,8 +56,13 @@ setup(
                         'zope.traversing',
                         'zope.deferredimport',
                         'zope.app.container',
+                        'zope.app.component',
+                        'zope.app.generations',
+                        'zope.app.zopeappgenerations',
                         ],
     extras_require = {
-        'test': ['zope.app.testing']
+        'test': ['zope.app.testing',
+                 'zope.app.zcmlfiles',
+                 ]
         },
     )
