@@ -7,14 +7,14 @@ import persistent
 import BTrees.OIBTree
 
 import zope.interface
-import zope.app.container.contained
+import zope.container.contained
 
 import gocept.reference.interfaces
 import gocept.reference.reference
 
 
 class ReferenceManager(persistent.Persistent,
-                       zope.app.container.contained.Contained):
+                       zope.container.contained.Contained):
 
     zope.interface.implements(gocept.reference.interfaces.IReferenceManager)
 

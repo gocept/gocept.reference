@@ -49,15 +49,21 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['gocept'],
     install_requires = ['setuptools',
+                        'transaction',
                         'ZODB3',
                         'zope.interface',
                         'zope.component',
                         'zope.annotation',
                         'zope.traversing',
                         'zope.deferredimport',
-                        'zope.app.container',
+                        'zope.container',
+                        'zope.site',
+                        'zope.app.generations',
+                        'zope.app.zopeappgenerations',
                         ],
     extras_require = {
-        'test': ['zope.app.testing']
+        'test': ['zope.app.testing',
+                 'zope.app.zcmlfiles',
+                 ]
         },
     )
