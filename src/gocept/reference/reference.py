@@ -102,31 +102,18 @@ class Reference(ReferenceBase):
             return None
         return self.lookup(target_key)
 
-    @find_name
     def __set__(self, instance, value):
-        if self.back_reference:
-            old_target = getattr(instance, self.__name__, None)
-            if old_target is not None:
-                other = self.manager.lookup_backreference(
-                    old_target, self.back_reference)
-                other.unreference(old_target, instance)
         self.reference(instance, value)
         if self.back_reference and value is not None:
             other = self.manager.lookup_backreference(
                 value, self.back_reference)
-            value_old_target = getattr(value, other.name(value), None)
-            if value_old_target is not None:
-                other_other = self.manager.lookup_backreference(
-                    value_old_target, self.back_reference)
-                other_other.unreference(value_old_target, value)
             other.reference(value, instance)
 
     @find_name
-    def name(self, instance):
-        return self.__name__
-
-    @find_name
     def reference(self, instance, target):
+        if self.back_reference:
+            self._clear_backref(instance)
+
         self._unregister(instance)
         storage = self.storage(instance)
         if target is None:
@@ -136,8 +123,11 @@ class Reference(ReferenceBase):
         storage[self.__name__] = target
         self._register(instance)
 
+    @find_name
     def unreference(self, instance, target):
-        self.reference(instance, None)
+        self._unregister(instance)
+        storage = self.storage(instance)
+        storage[self.__name__] = None
 
     # Helper methods
 
@@ -160,3 +150,10 @@ class Reference(ReferenceBase):
             transaction.doom()
             raise
         self.manager.register_reference(target_key)
+
+    def _clear_backref(self, instance):
+        target = getattr(instance, self.__name__, None)
+        if target is None:
+            return
+        other = self.manager.lookup_backreference(target, self.back_reference)
+        other.unreference(target, instance)
