@@ -21,7 +21,8 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
         if instance is None:
             return self
         try:
-            target_set = self.storage(instance)[self.__name__]
+            target_set = gocept.reference.reference.get_storage(
+                instance)[self.__name__]
         except KeyError:
             raise AttributeError(self.__name__)
         return target_set
@@ -29,14 +30,14 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
     @gocept.reference.reference.find_name
     def __set__(self, instance, value):
         self._unregister(instance)
-        storage = self.storage(instance)
+        storage = gocept.reference.reference.get_storage(instance)
         if value is None:
             storage[self.__name__] = None
             return
         if isinstance(value, (set, sets.BaseSet)):
             value = InstrumentedSet(value, self)
         elif isinstance(value, InstrumentedSet):
-            value._register_collection(self)
+            pass
         else:
             raise TypeError("%r can't be assigned as a reference collection: "
                             "only sets are allowed." % value)
@@ -52,7 +53,8 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
     def _unregister(self, instance):
         if not self.needs_registration(instance):
             return
-        target_set = self.storage(instance).get(self.__name__)
+        target_set = gocept.reference.reference.get_storage(
+            instance).get(self.__name__)
         if not target_set:
             return
         target_set._unregister_all()
@@ -60,7 +62,8 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
     def _register(self, instance):
         if not self.needs_registration(instance):
             return
-        target_set = self.storage(instance).get(self.__name__)
+        target_set = gocept.reference.reference.get_storage(
+            instance).get(self.__name__)
         if target_set is None:
             return
         target_set._register_all()
@@ -72,15 +75,6 @@ class InstrumentedSet(persistent.Persistent):
         # Convert objects to their keys
         self._data = BTrees.OOBTree.TreeSet(
             zope.traversing.api.getPath(item) for item in src)
-        self._referencing_collections = BTrees.OOBTree.TreeSet()
-        self._register_collection(collection)
-
-    def _register_collection(self, collection):
-        if collection not in self._referencing_collections:
-            self._referencing_collections.insert(collection)
-
-    def _unregister_collection(self, collection):
-        self._referencing_collections.remove(collection)
 
     def _register_all(self):
         for key in self._data:
@@ -92,29 +86,21 @@ class InstrumentedSet(persistent.Persistent):
 
     def _register_key(self, key):
         try:
-            self.lookup(key)
-            self.manager.register_reference(key)
+            gocept.reference.reference.lookup(key)
+            gocept.reference.reference.get_manager().register_reference(key)
         except gocept.reference.interfaces.IntegrityError:
             # _register is called after data structures have been changed.
             transaction.doom()
             raise
 
     def _unregister_key(self, key):
-        self.manager.unregister_reference(key)
-
-    @property
-    def manager(self):
-        return iter(self._referencing_collections).next().manager
-
-    @property
-    def lookup(self):
-        return iter(self._referencing_collections).next().lookup
+        gocept.reference.reference.get_manager().unregister_reference(key)
 
     def __iter__(self):
         # The referencing collections have enough context to lookup a key, so
         # we just defer to them.
         for x in self._data:
-            yield self.lookup(x)
+            yield gocept.reference.reference.lookup(x)
 
     def __len__(self):
         return len(self._data)
@@ -154,7 +140,7 @@ class InstrumentedSet(persistent.Persistent):
         key = iter(self._data).next()
         self._data.remove(key)
         self._unregister_key(key)
-        return self.lookup(key)
+        return gocept.reference.reference.lookup(key)
 
     def clear(self):
         self._unregister_all()

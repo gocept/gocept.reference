@@ -21,13 +21,11 @@ class IntegrityError(Exception):
 
 class LookupError(KeyError):
 
-    def __init__(self, target_key, reference):
+    def __init__(self, target_key):
         self.target_key = target_key
-        self.reference = reference
 
     def __str__(self):
-        return "Target %r of reference %r no longer exists." % (
-            self.target_key, self.reference.__name__)
+        return "Reference target %r no longer exists." % self.target_key
 
 
 class IReferenceSource(zope.interface.Interface):

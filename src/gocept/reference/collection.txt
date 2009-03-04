@@ -75,13 +75,13 @@ The result is a broken reference:
 
 >>> list(halle.cultural_institutions)
 Traceback (most recent call last):
-LookupError: Target u'/cinema' of reference 'cultural_institutions' no longer exists.
+LookupError: Reference target u'/cinema' no longer exists.
 
 Also, we can not locate `halle` right now, as long as the reference is broken:
 
 >>> root['halle'] = halle
 Traceback (most recent call last):
-LookupError: Target u'/cinema' of reference 'cultural_institutions' no longer exists.
+LookupError: Reference target u'/cinema' no longer exists.
 
 The transaction was doomed, so we abort:
 

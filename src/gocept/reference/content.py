@@ -34,10 +34,11 @@ class ReferenceSource(object):
     def verify_integrity(self):
         for name, ref in find_references(
             self.context):
-            target_key = ref.storage(self.context).get(name)
+            target_key = gocept.reference.reference.get_storage(
+                self.context).get(name)
             if target_key:
                 try:
-                    ref.lookup(target_key)
+                    gocept.reference.reference.lookup(target_key)
                 except gocept.reference.interfaces.LookupError:
                     return False
         return True
