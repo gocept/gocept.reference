@@ -44,10 +44,10 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
         self._register(instance)
 
     def reference(self, instance, target):
-        getattr(instance, self.__name__).add(target)
+        getattr(instance, self.__name__).reference(target)
 
     def unreference(self, instance, target):
-        getattr(instance, self.__name__).discard(target)
+        getattr(instance, self.__name__).unreference(target)
 
     def _unregister(self, instance):
         if not self.needs_registration(instance):
@@ -122,17 +122,23 @@ class InstrumentedSet(persistent.Persistent):
     def __repr__(self):
         return 'InstrumentedSet(%r)' % list(self._data)
 
-    def add(self, value):
-        key = zope.traversing.api.getPath(value)
+    def reference(self, target):
+        key = zope.traversing.api.getPath(target)
         # XXX provide test case for conditional increase
         if key not in self._data:
             self._data.insert(key)
             self._register_key(key)
 
-    def remove(self, value):
-        key = zope.traversing.api.getPath(value)
+    def unreference(self, target):
+        key = zope.traversing.api.getPath(target)
         self._data.remove(key)
         self._unregister_key(key)
+
+    def add(self, value):
+        self.reference(value)
+
+    def remove(self, value):
+        self.unreference(value)
 
     def update(self, values):
         for value in values:
