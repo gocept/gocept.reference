@@ -107,7 +107,7 @@ class Reference(ReferenceBase):
     def __set__(self, instance, value):
         self.reference(instance, value)
         if self.back_reference and value is not None:
-            other = self.manager.lookup_backreference(
+            other = get_manager().lookup_backreference(
                 value, self.back_reference)
             other.reference(value, instance)
 
@@ -128,7 +128,7 @@ class Reference(ReferenceBase):
     @find_name
     def unreference(self, instance, target):
         self._unregister(instance)
-        storage = self.storage(instance)
+        storage = get_storage(instance)
         storage[self.__name__] = None
 
     # Helper methods
@@ -157,5 +157,6 @@ class Reference(ReferenceBase):
         target = getattr(instance, self.__name__, None)
         if target is None:
             return
-        other = self.manager.lookup_backreference(target, self.back_reference)
+        other = get_manager().lookup_backreference(
+            target, self.back_reference)
         other.unreference(target, instance)
