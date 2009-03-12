@@ -36,8 +36,11 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
                             "only sets are allowed." % value)
         self._unregister(instance)
         storage = gocept.reference.reference.get_storage(instance)
+        if storage[self.__name__] is not None:
+            storage[self.__name__].discard_usage(instance, self)
         storage[self.__name__] = value
         if value is not None:
+            value.add_usage(instance, self)
             self._register(instance)
 
     def reference(self, instance, target):
@@ -67,10 +70,33 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
 
 class InstrumentedSet(persistent.Persistent):
 
-    def __init__(self, src, collection):
+    def __init__(self, src, instance, collection):
         # Convert objects to their keys
         self._data = BTrees.OOBTree.TreeSet(
             zope.traversing.api.getPath(item) for item in src)
+        self._usage = BTrees.OOBTree.OOBTree()
+        self.add_usage(instance, collection)
+
+    def add_usage(self, instance, collection):
+        names = self._usage.setdefault(
+            zope.traversing.api.getPath(instance), ())
+        if collection.name in names:
+            return
+        names += (collection.name,)
+
+    def discard_usage(self, instance, collection):
+        key = zope.traversing.api.getPath(instance)
+        if key not in self._usage:
+            return
+        names = self._usage.get(key)
+        name = collection.name
+        if name not in names:
+            return
+        names = tuple(n for n in names if n != name)
+        if names:
+            self._usage[key] = names
+        else:
+            del self._usage[key]
 
     def _register_all(self):
         for key in self._data:
