@@ -29,20 +29,16 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
 
     @gocept.reference.reference.find_name
     def __set__(self, instance, value):
-        self._unregister(instance)
-        storage = gocept.reference.reference.get_storage(instance)
-        if value is None:
-            storage[self.__name__] = None
-            return
         if isinstance(value, (set, sets.BaseSet)):
             value = InstrumentedSet(value, self)
-        elif isinstance(value, InstrumentedSet):
-            pass
-        else:
+        if value is not None and not isinstance(value, InstrumentedSet):
             raise TypeError("%r can't be assigned as a reference collection: "
                             "only sets are allowed." % value)
+        self._unregister(instance)
+        storage = gocept.reference.reference.get_storage(instance)
         storage[self.__name__] = value
-        self._register(instance)
+        if value is not None:
+            self._register(instance)
 
     def _unregister(self, instance):
         if not self.needs_registration(instance):
