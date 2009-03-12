@@ -1,0 +1,35 @@
+===========
+Regressions
+===========
+
+
+>>> import zope.site.hooks
+>>> root = getRootFolder()
+>>> zope.site.hooks.setSite(root)
+
+>>> from gocept.reference.testing import City
+>>> halle = root['halle'] = City()
+
+>>> from gocept.reference.testing import CulturalInstitution
+>>> theatre = root['theatre'] = CulturalInstitution()
+
+gocept.reference 0.5.2 had a consistency bug: Causing a TypeError by trying to
+assign a non-collection to a ReferenceCollection attribute would break
+integrity enforcement for that attribute while keeping its previously assigned
+value. This is how it should work:
+
+>>> halle.cultural_institutions = set((theatre,))
+>>> del root['theatre']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+
+>>> halle.cultural_institutions = 1
+Traceback (most recent call last):
+TypeError: 1 can't be assigned as a reference collection: only sets are allowed.
+
+>>> halle.cultural_institutions
+InstrumentedSet([u'/theatre'])
+
+>>> del root['theatre']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
