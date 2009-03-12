@@ -76,6 +76,10 @@ class ReferenceBase(object):
         self._unregister(instance)
         del get_storage(instance)[self.__name__]
 
+    @find_name
+    def name(self):
+        return self.__name__
+
     def needs_registration(self, instance):
         if not self.ensure_integrity:
             return False
