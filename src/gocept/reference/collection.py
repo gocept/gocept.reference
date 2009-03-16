@@ -8,6 +8,9 @@ import sets
 import BTrees.OOBTree
 import persistent
 import transaction
+import zope.component
+import zope.container.interfaces
+import zope.interface
 import zope.traversing.api
 
 import gocept.reference.reference
@@ -36,11 +39,11 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
                             "only sets are allowed." % value)
         self._unregister(instance)
         storage = gocept.reference.reference.get_storage(instance)
-        if storage[self.__name__] is not None:
-            storage[self.__name__].discard_usage(instance, self)
+        if storage.get(self.__name__) is not None:
+            storage[self.__name__].discard_usage(instance, self.name)
         storage[self.__name__] = value
         if value is not None:
-            value.add_usage(instance, self)
+            value.add_usage(instance, self.name)
             self._register(instance)
 
     def reference(self, instance, target):
@@ -76,22 +79,27 @@ class InstrumentedSet(persistent.Persistent):
             zope.traversing.api.getPath(item) for item in src)
         self._usage = BTrees.OOBTree.OOBTree()
 
-    def add_usage(self, instance, collection):
-        names = self._usage.setdefault(
-            zope.traversing.api.getPath(instance), ())
-        if collection.name in names:
+    def add_usage(self, instance, collection_name):
+        try:
+            key = zope.traversing.api.getPath(instance)
+        except TypeError:
             return
-        names += (collection.name,)
+        names = self._usage.setdefault(key, ())
+        if collection_name in names:
+            return
+        names += (collection_name,)
 
-    def discard_usage(self, instance, collection):
-        key = zope.traversing.api.getPath(instance)
+    def discard_usage(self, instance, collection_name):
+        try:
+            key = zope.traversing.api.getPath(instance)
+        except TypeError:
+            return
         if key not in self._usage:
             return
         names = self._usage.get(key)
-        name = collection.name
-        if name not in names:
+        if collection_name not in names:
             return
-        names = tuple(n for n in names if n != name)
+        names = tuple(n for n in names if n != collection_name)
         if names:
             self._usage[key] = names
         else:
@@ -166,3 +174,24 @@ class InstrumentedSet(persistent.Persistent):
     def clear(self):
         self._unregister_all()
         self._data.clear()
+
+
+def find_instrumented_sets(obj):
+    for name in dir(obj):
+        attr = getattr(obj, name, None)
+        if isinstance(attr, InstrumentedSet):
+            yield name, attr
+
+
+@zope.component.adapter(zope.interface.Interface,
+                        zope.container.interfaces.IObjectAddedEvent)
+def ensure_usage_registration(obj, event):
+    for name, value in find_instrumented_sets(obj):
+        value.add_usage(obj, name)
+
+
+@zope.component.adapter(zope.interface.Interface,
+                        zope.container.interfaces.IObjectRemovedEvent)
+def ensure_usage_unregistration(obj, event):
+    for name, value in find_instrumented_sets(obj):
+        value.discard_usage(obj, name)
