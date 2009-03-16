@@ -6,6 +6,8 @@
   <subscriber handler=".content.ensure_referential_integrity" />
   <subscriber handler=".content.ensure_registration" />
   <subscriber handler=".content.ensure_unregistration" />
+  <subscriber handler=".collection.ensure_usage_registration" />
+  <subscriber handler=".collection.ensure_usage_unregistration" />
 
   <adapter factory=".content.ReferenceSource" />
   <adapter factory=".content.ReferenceTarget" />
