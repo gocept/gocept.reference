@@ -80,6 +80,65 @@ True
 True
 
 
+Back-references involving reference collections (one-to-many)
+=============================================================
+
+Let's define two more sample classes, instances of one of which reference a
+collection of instances of the other:
+
+>>> class Parent(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     children = gocept.reference.ReferenceCollection(
+...         back_reference='parent-child')
+...     def __init__(self):
+...         self.children = set()
+
+
+>>> class Child(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     parent = gocept.reference.Reference(back_reference='parent-child')
+
+>>> from gocept.reference.testing import Parent, Child
+
+We need located instances of these classes again:
+
+>>> homer = root['homer'] = Parent()
+>>> bart = root['bart'] = Child()
+
+Adding bart to homer's children makes bart reference homer as his parent:
+
+>>> homer.children.add(bart)
+>>> homer.children
+InstrumentedSet([u'/bart'])
+>>> bart in homer.children
+True
+>>> bart.parent is homer
+True
+
+Removing bart from homer's children again will reset bart's parent:
+
+>>> homer.children.remove(bart)
+>>> homer.children
+InstrumentedSet([])
+>>> bart.parent
+
+The same referencing and dereferencing can be achieved by setting and
+unsetting bart's parent:
+
+>>> bart.parent = homer
+>>> homer.children
+InstrumentedSet([u'/bart'])
+>>> bart in homer.children
+True
+>>> bart.parent is homer
+True
+
+>>> bart.parent = None
+>>> homer.children
+InstrumentedSet([])
+>>> bart.parent
+
+
 .. Local Variables:
 .. mode: rst
 .. End:

@@ -149,11 +149,52 @@ class InstrumentedSet(persistent.Persistent):
         self._data.remove(key)
         self._unregister_key(key)
 
+    def _find_references(self):
+        for key, names in self._usage.items():
+            instance = gocept.reference.reference.lookup(key)
+            for name in names:
+                collection = getattr(instance.__class__, name)
+                if isinstance(collection,
+                              gocept.reference.reference.ReferenceBase):
+                    yield instance, collection
+
     def add(self, value):
+        old_length = len(self._data)
         self.reference(value)
+        if old_length == len(self._data):
+            return
+
+        manager = None
+        seen = set()
+        for instance, collection in self._find_references():
+            if not collection.back_reference:
+                continue
+            if manager is None:
+                manager = gocept.reference.reference.get_manager()
+            other = manager.lookup_backreference(
+                value, collection.back_reference)
+            if ((instance, other) in seen and
+                not isinstance(other, ReferenceCollection)):
+                transaction.doom()
+                raise ValueError('Ambiguous back-reference.')
+            seen.add((instance, other))
+            other.reference(value, instance)
 
     def remove(self, value):
+        old_length = len(self._data)
         self.unreference(value)
+        if old_length == len(self._data):
+            return
+
+        manager = None
+        for instance, collection in self._find_references():
+            if not collection.back_reference:
+                continue
+            if manager is None:
+                manager = gocept.reference.reference.get_manager()
+            other = manager.lookup_backreference(
+                value, collection.back_reference)
+            other.unreference(value, instance)
 
     def update(self, values):
         for value in values:
