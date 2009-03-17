@@ -77,7 +77,7 @@ class ReferenceBase(object):
         del get_storage(instance)[self.__name__]
 
     @find_name
-    def name(self):
+    def name(self, instance):
         return self.__name__
 
     def needs_registration(self, instance):

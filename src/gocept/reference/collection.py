@@ -40,10 +40,11 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
         self._unregister(instance)
         storage = gocept.reference.reference.get_storage(instance)
         if storage.get(self.__name__) is not None:
-            storage[self.__name__].discard_usage(instance, self.name)
+            storage[self.__name__].discard_usage(
+                instance, self.name(instance))
         storage[self.__name__] = value
         if value is not None:
-            value.add_usage(instance, self.name)
+            value.add_usage(instance, self.name(instance))
             self._register(instance)
 
     def reference(self, instance, target):
@@ -84,10 +85,9 @@ class InstrumentedSet(persistent.Persistent):
             key = zope.traversing.api.getPath(instance)
         except TypeError:
             return
-        names = self._usage.setdefault(key, ())
-        if collection_name in names:
+        if collection_name in self._usage.setdefault(key, ()):
             return
-        names += (collection_name,)
+        self._usage[key] += (collection_name,)
 
     def discard_usage(self, instance, collection_name):
         try:
