@@ -62,7 +62,8 @@ setup(
                         'zope.app.zopeappgenerations',
                         ],
     extras_require = {
-        'test': ['zope.app.testing',
+        'test': ['zope.testing',
+                 'zope.app.testing',
                  'zope.app.zcmlfiles',
                  ]
         },

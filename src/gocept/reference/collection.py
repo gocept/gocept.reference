@@ -89,6 +89,19 @@ class InstrumentedSet(persistent.Persistent):
             return
         self._usage[key] += (collection_name,)
 
+        collection = getattr(instance.__class__, collection_name)
+        if collection.back_reference:
+            manager = gocept.reference.reference.get_manager()
+            backref = collection.back_reference
+            instances = self._find_backreferences()[backref]
+            for target in self:
+                other = manager.lookup_backreference(target, backref)
+                if (len(instances) > 1
+                    and not isinstance(other, ReferenceCollection)):
+                    transaction.doom()
+                    raise ValueError('Ambiguous back-reference.')
+                other.reference(target, instance)
+
     def discard_usage(self, instance, collection_name):
         try:
             key = zope.traversing.api.getPath(instance)
@@ -104,6 +117,8 @@ class InstrumentedSet(persistent.Persistent):
             self._usage[key] = names
         else:
             del self._usage[key]
+
+        # XXX remove back-references, possibly requires a backref counter
 
     def _register_all(self):
         for key in self._data:
@@ -149,14 +164,18 @@ class InstrumentedSet(persistent.Persistent):
         self._data.remove(key)
         self._unregister_key(key)
 
-    def _find_references(self):
+    def _find_backreferences(self):
+        backrefs = {}
         for key, names in self._usage.items():
             instance = gocept.reference.reference.lookup(key)
             for name in names:
                 collection = getattr(instance.__class__, name)
-                if isinstance(collection,
-                              gocept.reference.reference.ReferenceBase):
-                    yield instance, collection
+                if (isinstance(collection,
+                               gocept.reference.reference.ReferenceBase)
+                    and collection.back_reference):
+                    backrefs.setdefault(
+                        collection.back_reference, set()).add(instance)
+        return backrefs
 
     def add(self, value):
         old_length = len(self._data)
@@ -164,37 +183,24 @@ class InstrumentedSet(persistent.Persistent):
         if old_length == len(self._data):
             return
 
-        manager = None
-        seen = set()
-        for instance, collection in self._find_references():
-            if not collection.back_reference:
-                continue
-            if manager is None:
-                manager = gocept.reference.reference.get_manager()
-            other = manager.lookup_backreference(
-                value, collection.back_reference)
-            if ((instance, other) in seen and
-                not isinstance(other, ReferenceCollection)):
+        manager = gocept.reference.reference.get_manager()
+        for backref, instances in self._find_backreferences().iteritems():
+            other = manager.lookup_backreference(value, backref)
+            if (len(instances) > 1
+                and not isinstance(other, ReferenceCollection)):
                 transaction.doom()
                 raise ValueError('Ambiguous back-reference.')
-            seen.add((instance, other))
-            other.reference(value, instance)
+            for instance in instances:
+                other.reference(value, instance)
 
     def remove(self, value):
-        old_length = len(self._data)
         self.unreference(value)
-        if old_length == len(self._data):
-            return
 
-        manager = None
-        for instance, collection in self._find_references():
-            if not collection.back_reference:
-                continue
-            if manager is None:
-                manager = gocept.reference.reference.get_manager()
-            other = manager.lookup_backreference(
-                value, collection.back_reference)
-            other.unreference(value, instance)
+        manager = gocept.reference.reference.get_manager()
+        for backref, instances in self._find_backreferences().iteritems():
+            other = manager.lookup_backreference(value, backref)
+            for instance in instances:
+                other.unreference(value, instance)
 
     def update(self, values):
         for value in values:
@@ -203,8 +209,7 @@ class InstrumentedSet(persistent.Persistent):
     def discard(self, value):
         key = zope.traversing.api.getPath(value)
         if key in self._data:
-            self._unregister_key(key)
-            self._data.remove(key)
+            self.remove(value)
 
     def pop(self):
         key = iter(self._data).next()

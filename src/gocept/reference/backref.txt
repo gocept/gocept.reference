@@ -104,6 +104,7 @@ We need located instances of these classes again:
 
 >>> homer = root['homer'] = Parent()
 >>> bart = root['bart'] = Child()
+>>> lisa = root['lisa'] = Child()
 
 Adding bart to homer's children makes bart reference homer as his parent:
 
@@ -137,6 +138,39 @@ True
 >>> homer.children
 InstrumentedSet([])
 >>> bart.parent
+
+Manipulating homer's children using the other methods of the set API works as
+expected[#set-api]_.
+
+.. [#set-api] Let's demonstrate some further methods of an InstrumentedSet's
+    set API:
+
+    >>> bart.parent
+    >>> homer.children = set([bart])
+    >>> homer.children
+    InstrumentedSet([u'/bart'])
+    >>> bart in homer.children
+    True
+    >>> bart.parent is homer
+    True
+
+    >>> homer.children.update([lisa])
+    >>> homer.children
+    InstrumentedSet([u'/bart', u'/lisa'])
+    >>> lisa in homer.children
+    True
+    >>> lisa.parent is homer
+    True
+
+    >>> homer.children.discard(bart)
+    >>> homer.children
+    InstrumentedSet([u'/lisa'])
+    >>> bart.parent
+
+    >>> homer.children.clear()
+    >>> homer.children
+    InstrumentedSet([])
+    >>> lisa.parent
 
 
 .. Local Variables:

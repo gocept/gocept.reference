@@ -2,7 +2,7 @@
 # Copyright (c) 2007-2009 gocept gmbh & co. kg
 # See also LICENSE.txt
 
-import doctest
+from zope.testing import doctest
 import os.path
 import zope.annotation.interfaces
 import zope.container.contained
@@ -20,7 +20,8 @@ FunctionalLayer = zope.app.testing.functional.ZCMLLayer(
 def FunctionalDocFileSuite(*paths, **kw):
     kw['optionflags'] = (kw.get('optionflags', 0) |
                          doctest.ELLIPSIS |
-                         doctest.NORMALIZE_WHITESPACE)
+                         doctest.NORMALIZE_WHITESPACE |
+                         doctest.INTERPRET_FOOTNOTES)
     suite = zope.app.testing.functional.FunctionalDocFileSuite(*paths, **kw)
     suite.layer = FunctionalLayer
     return suite
