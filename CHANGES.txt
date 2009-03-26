@@ -8,6 +8,15 @@ Changes
 - Take advantage of the simpler zope package dependencies achieved at the Grok
   cave sprint in January 2009.
 
+- Added zope.schema field ``gocept.reference.field.Set`` which has the
+  internally used InstrumentedSet as field type, so validation does
+  not fail.
+
+- gocept.reference 0.5.2 had a consistency bug: Causing a TypeError by
+  trying to assign a non-collection to a ReferenceCollection attribute
+  would break integrity enforcement for that attribute while keeping
+  its previously assigned value.
+
 
 0.5.2 (2008-10-16)
 ==================
@@ -49,7 +58,7 @@ Changes
 
 - Extended the API for `IReferenceTarget.is_referenced` to allow specifying
   whether to query for references recursively or only on a specific object.
-  By default the query is recursive. 
+  By default the query is recursive.
 
 - Fixed bug in the event handler for enforcing ensured constraints: referenced
   objects could be deleted if they were deleted together with a parent
