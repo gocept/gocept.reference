@@ -35,7 +35,8 @@ Changes
 ==================
 
 - Made sure that the reference manager is installed using
-  zope.app.generations before packages depending on gocept.reference.
+  zope.app.generations before other packages depending on
+  gocept.reference.
 
 0.5 (2008-09-11)
 ================
