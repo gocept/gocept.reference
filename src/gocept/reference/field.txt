@@ -6,7 +6,7 @@ To comply with zope.schema, gocept.reference has an own set field
 which has the internally used InstrumentedSet class as type.
 
 For demonstration purposes we create an interface which uses both
-gocept.reference.field.Set and zope.schema.Set:
+``gocept.reference.field.Set`` and ``zope.schema.Set``:
 
 >>> import gocept.reference
 >>> import gocept.reference.field
@@ -39,10 +39,26 @@ InstrumentedSet([])
 >>> collector.zs_items
 InstrumentedSet([])
 
-Successful valudation returns None but failing leads to an exception:
+``gocept.reference.field.Set`` validates both ``set`` and
+``InstrumentedSet`` and correctly, but raises an exception if
+something else is validated:
 
 >>> ICollector['gr_items'].bind(collector).validate(collector.gr_items) is None
 True
+>>> ICollector['gr_items'].bind(collector).validate(set([])) is None
+True
+>>> ICollector['gr_items'].bind(collector).validate([])
+Traceback (most recent call last):
+WrongType: ([], (<type 'set'>,
+                 <class 'gocept.reference.collection.InstrumentedSet'>))
+
+While ``zope.schema.Set`` fails at ``InstrumentedSet`` as expected:
+
 >>> ICollector['zs_items'].bind(collector).validate(collector.zs_items)
 Traceback (most recent call last):
 WrongType: (InstrumentedSet([]), <type 'set'>)
+>>> ICollector['zs_items'].bind(collector).validate(set([])) is None
+True
+>>> ICollector['zs_items'].bind(collector).validate([])
+Traceback (most recent call last):
+WrongType: ([], <type 'set'>)
