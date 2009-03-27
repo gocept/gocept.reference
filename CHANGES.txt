@@ -2,10 +2,12 @@
 Changes
 =======
 
-0.7 (unreleased)
-================
+0.6.2 (unreleased)
+==================
 
-- Nothing changed yet.
+- Validation of ``gocept.reference.field.Set`` now allows both
+  ``InstrumentedSet`` and ``set`` in field validation, as both
+  variants occur.
 
 
 0.6.1 (2009-03-27)

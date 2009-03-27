@@ -15,7 +15,14 @@ class Set(zope.schema.Set):
         # We need to clone the field here to make sure that setting
         # the _type for validation does not have impact on other
         # instances
+        if isinstance(value, self._type):
+            validation_type = self._type
+        elif isinstance(value, self._internal_type):
+            validation_type = self._internal_type
+        else:
+            raise zope.schema._bootstrapinterfaces.WrongType(
+                value, (self._type, self._internal_type))
         clone = self.__class__.__new__(self.__class__)
         clone.__dict__.update(self.__dict__)
-        clone._type = self._internal_type
+        clone._type = validation_type
         super(Set, clone)._validate(value)
