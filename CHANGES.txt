@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.6.1 (unreleased)
+0.6.1 (2009-03-27)
 ==================
 
 - ``zope.app.form`` breaks encapsulation of the fields by using the
