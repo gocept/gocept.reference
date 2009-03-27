@@ -4,8 +4,18 @@
 
 import zope.schema
 import gocept.reference.collection
+import zope.schema._bootstrapinterfaces
 
 class Set(zope.schema.Set):
     """A set field using the InstrumentedSet class."""
 
-    _type = gocept.reference.collection.InstrumentedSet
+    _internal_type = gocept.reference.collection.InstrumentedSet
+
+    def _validate(self, value):
+        # We need to clone the field here to make sure that setting
+        # the _type for validation does not have impact on other
+        # instances
+        clone = self.__class__.__new__(self.__class__)
+        clone.__dict__.update(self.__dict__)
+        clone._type = self._internal_type
+        super(Set, clone)._validate(value)
