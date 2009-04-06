@@ -2,8 +2,8 @@
 Changes
 =======
 
-0.7 (unreleased)
-================
+0.7.0 (2009-04-06)
+==================
 
 - Requires newer ``zope.app.generations`` version to get rid of
   dependency on ``zope.app.zopeappgenerations``.
