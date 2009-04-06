@@ -59,8 +59,7 @@ setup(
                         'zope.deferredimport',
                         'zope.container',
                         'zope.site',
-                        'zope.app.generations',
-                        'zope.app.zopeappgenerations',
+                        'zope.app.generations >= 3.5.0',
                         ],
     extras_require = {
         'test': ['zope.app.testing',
