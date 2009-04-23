@@ -33,3 +33,45 @@ InstrumentedSet([u'/theatre'])
 >>> del root['theatre']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+
+
+In version 0.7, a bug was found that caused attempts to unreference targets
+that weren't registered in the first place when using reference sets without
+integrity enforcement. With or without the latter, targets should be both
+assignable and addable to and removable from reference collections any number
+of times:
+
+>>> halle.cultural_institutions = set()
+>>> halle.cultural_institutions.add(theatre)
+>>> halle.cultural_institutions.remove(theatre)
+>>> halle.cultural_institutions.add(theatre)
+>>> halle.cultural_institutions.remove(theatre)
+>>> halle.cultural_institutions = set((theatre,))
+>>> halle.cultural_institutions.remove(theatre)
+>>> halle.cultural_institutions = set((theatre,))
+>>> halle.cultural_institutions.remove(theatre)
+
+>>> from gocept.reference.testing import Village
+>>> dorf = root['dorf'] = Village()
+>>> dorf.cultural_institutions = set()
+>>> dorf.cultural_institutions.add(theatre)
+>>> dorf.cultural_institutions.remove(theatre)
+>>> dorf.cultural_institutions.add(theatre)
+>>> dorf.cultural_institutions.remove(theatre)
+>>> dorf.cultural_institutions = set((theatre,))
+>>> dorf.cultural_institutions.remove(theatre)
+>>> dorf.cultural_institutions = set((theatre,))
+>>> dorf.cultural_institutions.remove(theatre)
+
+The same implementation bug prevented deletion of objects that were contained
+in a reference set when it was assigned to more than one integrity-ensured
+ReferenceCollection attribute, but removed from it later. This should work:
+
+>>> zoo = root['zoo'] = CulturalInstitution()
+>>> halle.cultural_institutions = set([zoo])
+>>> leipzig = root['leipzig'] = City()
+>>> leipzig.cultural_institutions = halle.cultural_institutions
+>>> halle.cultural_institutions.remove(zoo)
+>>> leipzig.cultural_institutions
+InstrumentedSet([])
+>>> del root['zoo']
