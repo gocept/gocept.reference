@@ -5,7 +5,8 @@ Changes
 0.7.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Fixed reference counting for reference collections by keeping a usage
+  counter for InstrumentedSets.
 
 
 0.7.0 (2009-04-06)
