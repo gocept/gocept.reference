@@ -32,6 +32,9 @@ Lösungsansatz
 
 - Mehrfachverwendungen einer Menge im Manager speichern
 
+- Alternativ: Referenzierende Objekte als Annotationen an Referenzzielen
+  speichern, evtl. auf Manager völlig verzichten.
+
 Mengen instrumentieren
 ======================
 
