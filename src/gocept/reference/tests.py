@@ -40,5 +40,6 @@ def test_suite():
             'verify.txt',
             'regression.txt',
             'field.txt',
+            'fix.txt',
             ))
     return suite
