@@ -59,7 +59,7 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
 
 class InstrumentedSet(persistent.Persistent):
 
-    _usage = 0
+    _ensured_usage_count = 0
 
     def __init__(self, src, collection):
         # Convert objects to their keys
@@ -67,19 +67,19 @@ class InstrumentedSet(persistent.Persistent):
             zope.traversing.api.getPath(item) for item in src)
 
     def register_usage(self):
-        self._usage += 1
+        self._ensured_usage_count += 1
         for key in self._data:
             self._register_key(key, count=1)
 
     def unregister_usage(self):
-        self._usage -= 1
+        self._ensured_usage_count -= 1
         for key in self._data:
             self._unregister_key(key, count=1)
 
     def _register_key(self, key, count=None):
         gocept.reference.reference.lookup(key)
         if count is None:
-            count = self._usage
+            count = self._ensured_usage_count
         try:
             gocept.reference.reference.get_manager().register_reference(
                 key, count)
@@ -90,7 +90,7 @@ class InstrumentedSet(persistent.Persistent):
 
     def _unregister_key(self, key, count=None):
         if count is None:
-            count = self._usage
+            count = self._ensured_usage_count
         gocept.reference.reference.get_manager().unregister_reference(
             key, count)
 
