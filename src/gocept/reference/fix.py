@@ -26,7 +26,7 @@ class Fixer(object):
                         ref, gocept.reference.collection.ReferenceCollection):
                     iset = getattr(obj, name, None)
                     if iset is not None:
-                        iset._usage = 0
+                        iset._ensured_usage_count = 0
 
     def fix_reference_counts(self):
         """Fix reference counts.
