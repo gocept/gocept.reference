@@ -2,11 +2,52 @@
 Changes
 =======
 
-0.6 (unreleased)
+0.7.1 (unreleased)
+==================
+
+- Nothing changed yet.
+
+
+0.7.0 (2009-04-06)
+==================
+
+- Requires newer ``zope.app.generations`` version to get rid of
+  dependency on ``zope.app.zopeappgenerations``.
+
+
+0.6.2 (2009-03-27)
+==================
+
+- Validation of ``gocept.reference.field.Set`` now allows both
+  ``InstrumentedSet`` and ``set`` in field validation, as both
+  variants occur.
+
+
+0.6.1 (2009-03-27)
+==================
+
+- ``zope.app.form`` breaks encapsulation of the fields by using the
+  ``_type`` attribute to convert form values to field values. Using
+  ``InstrumentedSet`` as ``_type`` was a bad idea, as only the
+  reference collection knows how to instantiate an
+  ``InstrumentedSet``. Now the trick is done on validation where the
+  ``_type`` gets set to ``InstrumentedSet`` temporarily.
+
+
+0.6 (2009-03-26)
 ================
 
 - Take advantage of the simpler zope package dependencies achieved at the Grok
   cave sprint in January 2009.
+
+- Added zope.schema field ``gocept.reference.field.Set`` which has the
+  internally used InstrumentedSet as field type, so validation does
+  not fail.
+
+- gocept.reference 0.5.2 had a consistency bug: Causing a TypeError by
+  trying to assign a non-collection to a ReferenceCollection attribute
+  would break integrity enforcement for that attribute while keeping
+  its previously assigned value.
 
 
 0.5.2 (2008-10-16)
@@ -20,7 +61,8 @@ Changes
 ==================
 
 - Made sure that the reference manager is installed using
-  zope.app.generations before packages depending on gocept.reference.
+  zope.app.generations before other packages depending on
+  gocept.reference.
 
 0.5 (2008-09-11)
 ================
@@ -49,7 +91,7 @@ Changes
 
 - Extended the API for `IReferenceTarget.is_referenced` to allow specifying
   whether to query for references recursively or only on a specific object.
-  By default the query is recursive. 
+  By default the query is recursive.
 
 - Fixed bug in the event handler for enforcing ensured constraints: referenced
   objects could be deleted if they were deleted together with a parent

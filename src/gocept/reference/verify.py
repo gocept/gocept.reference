@@ -7,6 +7,7 @@ import zope.interface.verify
 import zope.interface.exceptions
 
 import gocept.reference.reference
+import gocept.reference.collection
 
 
 def verifyObject(iface, candidate, tentative=0):

@@ -3,7 +3,7 @@ Verifying reference existence
 =============================
 
 It is not so easy to verify a class implements an attribute as a
-reference as their usage is transparent. 
+reference as their usage is transparent.
 
 References
 ==========
@@ -12,10 +12,12 @@ Let's build an example interface and class using a reference:
 
 >>> import zope.interface
 >>> import gocept.reference
+>>> import zope.annotation.interfaces
 >>> class IAddress(zope.interface.Interface):
 ...     city = zope.interface.Attribute("City the address belonges to.")
 >>> class Address(object):
-...     zope.interface.implements(IAddress)
+...     zope.interface.implements(
+...         zope.annotation.interfaces.IAttributeAnnotatable, IAddress)
 ...     city = gocept.reference.Reference()
 
 verifyClass does not check for attributes:
@@ -90,7 +92,8 @@ zope.inferface.verify.verfyObject:
 ...     cultural_institutions = zope.interface.Attribute(
 ...         "Cultural institutions the city has.")
 >>> class City(object):
-...     zope.interface.implements(ICity)
+...     zope.interface.implements(
+...         zope.annotation.interfaces.IAttributeAnnotatable, ICity)
 ...     cultural_institutions = gocept.reference.ReferenceCollection()
 
 >>> zope.interface.verify.verifyObject(ICity, City())
