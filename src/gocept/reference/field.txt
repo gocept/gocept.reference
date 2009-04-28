@@ -1,0 +1,64 @@
+=================
+zope.schema field
+=================
+
+To comply with zope.schema, gocept.reference has an own set field
+which has the internally used InstrumentedSet class as type.
+
+For demonstration purposes we create an interface which uses both
+``gocept.reference.field.Set`` and ``zope.schema.Set``:
+
+>>> import gocept.reference
+>>> import gocept.reference.field
+>>> import zope.annotation.interfaces
+>>> import zope.interface
+>>> import zope.schema
+>>> import zope.schema.vocabulary
+>>> dumb_vocab = zope.schema.vocabulary.SimpleVocabulary.fromItems(())
+>>> class ICollector(zope.interface.Interface):
+...     gr_items = gocept.reference.field.Set(
+...         title=u'collected items using gocept.reference.field',
+...         value_type=zope.schema.Choice(title=u'items', vocabulary=dumb_vocab)
+...     )
+...     zs_items = zope.schema.Set(
+...         title=u'collected items using zope.schema',
+...         value_type=zope.schema.Choice(title=u'items', vocabulary=dumb_vocab)
+...     )
+
+>>> class Collector(object):
+...     zope.interface.implements(
+...         ICollector, zope.annotation.interfaces.IAttributeAnnotatable)
+...     gr_items = gocept.reference.ReferenceCollection()
+...     zs_items = gocept.reference.ReferenceCollection()
+
+>>> collector = Collector()
+>>> collector.gr_items = set()
+>>> collector.gr_items
+InstrumentedSet([])
+>>> collector.zs_items = set()
+>>> collector.zs_items
+InstrumentedSet([])
+
+``gocept.reference.field.Set`` validates both ``set`` and
+``InstrumentedSet`` and correctly, but raises an exception if
+something else is validated:
+
+>>> ICollector['gr_items'].bind(collector).validate(collector.gr_items) is None
+True
+>>> ICollector['gr_items'].bind(collector).validate(set([])) is None
+True
+>>> ICollector['gr_items'].bind(collector).validate([])
+Traceback (most recent call last):
+WrongType: ([], (<type 'set'>,
+                 <class 'gocept.reference.collection.InstrumentedSet'>))
+
+While ``zope.schema.Set`` fails at ``InstrumentedSet`` as expected:
+
+>>> ICollector['zs_items'].bind(collector).validate(collector.zs_items)
+Traceback (most recent call last):
+WrongType: (InstrumentedSet([]), <type 'set'>)
+>>> ICollector['zs_items'].bind(collector).validate(set([])) is None
+True
+>>> ICollector['zs_items'].bind(collector).validate([])
+Traceback (most recent call last):
+WrongType: ([], <type 'set'>)
