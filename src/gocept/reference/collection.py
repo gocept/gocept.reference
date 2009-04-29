@@ -58,21 +58,21 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
             return
         target_set = gocept.reference.reference.get_storage(
             instance).get(self.__name__)
-        if not target_set:
-            return
-        target_set._unregister_all()
+        if target_set is not None:
+            target_set.unregister_usage()
 
     def _register(self, instance):
         if not self.needs_registration(instance):
             return
         target_set = gocept.reference.reference.get_storage(
             instance).get(self.__name__)
-        if target_set is None:
-            return
-        target_set._register_all()
+        if target_set is not None:
+            target_set.register_usage()
 
 
 class InstrumentedSet(persistent.Persistent):
+
+    _ensured_usage_count = 0
 
     def __init__(self, src):
         # Convert objects to their keys
@@ -120,25 +120,33 @@ class InstrumentedSet(persistent.Persistent):
 
         # XXX remove back-references, possibly requires a backref counter
 
-    def _register_all(self):
+    def register_usage(self):
+        self._ensured_usage_count += 1
         for key in self._data:
-            self._register_key(key)
+            self._register_key(key, count=1)
 
-    def _unregister_all(self):
+    def unregister_usage(self):
+        self._ensured_usage_count -= 1
         for key in self._data:
-            self._unregister_key(key)
+            self._unregister_key(key, count=1)
 
-    def _register_key(self, key):
+    def _register_key(self, key, count=None):
+        gocept.reference.reference.lookup(key)
+        if count is None:
+            count = self._ensured_usage_count
         try:
-            gocept.reference.reference.lookup(key)
-            gocept.reference.reference.get_manager().register_reference(key)
+            gocept.reference.reference.get_manager().register_reference(
+                key, count)
         except gocept.reference.interfaces.IntegrityError:
             # _register is called after data structures have been changed.
             transaction.doom()
             raise
 
-    def _unregister_key(self, key):
-        gocept.reference.reference.get_manager().unregister_reference(key)
+    def _unregister_key(self, key, count=None):
+        if count is None:
+            count = self._ensured_usage_count
+        gocept.reference.reference.get_manager().unregister_reference(
+            key, count)
 
     def __iter__(self):
         # The referencing collections have enough context to lookup a key, so
@@ -154,7 +162,6 @@ class InstrumentedSet(persistent.Persistent):
 
     def reference(self, target):
         key = zope.traversing.api.getPath(target)
-        # XXX provide test case for conditional increase
         if key not in self._data:
             self._data.insert(key)
             self._register_key(key)
@@ -218,8 +225,9 @@ class InstrumentedSet(persistent.Persistent):
         return gocept.reference.reference.lookup(key)
 
     def clear(self):
-        self._unregister_all()
-        self._data.clear()
+        for key in list(self._data):
+            value = gocept.reference.reference.lookup(key)
+            self.remove(value)
 
 
 def find_instrumented_sets(obj):

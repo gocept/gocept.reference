@@ -44,6 +44,15 @@ class City(zope.container.contained.Contained):
         ensure_integrity=True)
 
 
+class Village(zope.container.contained.Contained):
+
+    zope.interface.implements(
+        zope.annotation.interfaces.IAttributeAnnotatable)
+
+    cultural_institutions = gocept.reference.ReferenceCollection(
+        ensure_integrity=False)
+
+
 class Monument(zope.container.contained.Contained):
 
     zope.interface.implements(

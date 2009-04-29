@@ -1,13 +1,13 @@
 # vim:fileencoding=utf-8
 # Copyright (c) 2007-2009 gocept gmbh & co. kg
 # See also LICENSE.txt
-# $Id$
 """Interaction between the reference machinery and content objects."""
 
 import transaction
 
 import zope.interface
 import zope.component
+import zope.location
 import zope.traversing.interfaces
 import zope.traversing.api
 import zope.container.interfaces
@@ -21,6 +21,15 @@ def find_references(obj):
         attr = getattr(obj.__class__, name, None)
         if isinstance(attr, gocept.reference.reference.ReferenceBase):
             yield name, attr
+
+
+def sublocation_tree(obj):
+    yield obj
+    isub = zope.location.interfaces.ISublocations(obj, None)
+    if isub:
+        for direct in isub.sublocations():
+            for sub in sublocation_tree(direct):
+                yield sub
 
 
 class ReferenceSource(object):
@@ -53,24 +62,18 @@ class ReferenceTarget(object):
         self.context = context
 
     def is_referenced(self, recursive=True):
+        if recursive:
+            candidates = sublocation_tree(self.context)
+        else:
+            candidates = [self.context]
         manager = zope.component.getUtility(
             gocept.reference.interfaces.IReferenceManager)
-        locatable = zope.traversing.interfaces.IPhysicallyLocatable(
-                self.context)
-        if manager.is_referenced(locatable.getPath()):
-            return True
-
-        if recursive:
-            subs = zope.location.interfaces.ISublocations(self.context, None)
-            sub_locations = subs and subs.sublocations() or []
-            for sub in sub_locations:
-                sub_target = (
-                    gocept.reference.interfaces.IReferenceTarget(sub))
-                if sub_target.is_referenced():
-                    return True
-
-        # Neither our context nor any of the sub objects are referenced.
-        return False
+        for obj in candidates:
+            locatable = zope.traversing.interfaces.IPhysicallyLocatable(obj)
+            if manager.is_referenced(locatable.getPath()):
+                return True
+        else:
+            return False
 
 
 @zope.component.adapter(zope.interface.Interface,

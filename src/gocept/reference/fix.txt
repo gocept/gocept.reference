@@ -1,0 +1,112 @@
+=========================================
+A tool for fixing inconsistent references
+=========================================
+
+>>> import zope.site.hooks
+>>> root = getRootFolder()
+>>> zope.site.hooks.setSite(root)
+
+>>> import gocept.reference.reference
+>>> manager = gocept.reference.reference.get_manager()
+
+>>> from gocept.reference.fix import Fixer
+>>> fixer = Fixer()
+
+
+Fixing reference counts
+=======================
+
+Reference counts may become inconsistent between runs of the application if
+code is being updated, adding integrity ensurance to a reference attribute, or
+removing it from one. In such cases, the only reliable remedy is walking the
+location tree of the application, throwing away all reference and reference
+collection usage counts and registering all references anew. The fixer has a
+method to do this.
+
+Let's create a few objects referencing each other and look at their (correct)
+reference counts:
+
+>>> from gocept.reference.testing import \
+...     Address, Monument, City, Village, CulturalInstitution
+
+>>> root['jena'] = jena = City()
+>>> root['rosenkeller'] = rosenkeller = CulturalInstitution()
+>>> jena.cultural_institutions = set((rosenkeller,))
+
+>>> root['cospeda'] = cospeda = Village()
+>>> root['museum_1806'] = museum_1806 = CulturalInstitution()
+>>> cospeda.cultural_institutions = set((museum_1806,))
+
+>>> root['thomas'] = thomas = Address()
+>>> thomas.city = jena
+
+>>> hanfried = Monument()
+>>> hanfried.city = jena
+>>> root['hanfried'] = hanfried
+
+>>> dict(manager.reference_count)
+{u'/rosenkeller': 1, u'/jena': 1}
+>>> jena.cultural_institutions._ensured_usage_count
+1
+>>> cospeda.cultural_institutions._ensured_usage_count
+0
+
+If we modify the integrity ensurance properties of the references involved,
+the reference counts will be off since they refer to integrity-ensured
+references only. The fixer will change the counts in accordance with the new
+requirements:
+
+>>> Address.city.ensure_integrity = True
+>>> Monument.city.ensure_integrity = False
+>>> Village.cultural_institutions.ensure_integrity = True
+>>> City.cultural_institutions.ensure_integrity = False
+
+>>> fixer.fix_reference_counts()
+[]
+>>> dict(manager.reference_count)
+{u'/jena': 1, u'/museum_1806': 1}
+>>> jena.cultural_institutions._ensured_usage_count
+0
+>>> cospeda.cultural_institutions._ensured_usage_count
+1
+
+Now we revert the integrity ensurance properties to what they had been and
+apply the fixer again:
+
+>>> Address.city.ensure_integrity = False
+>>> Monument.city.ensure_integrity = True
+>>> Village.cultural_institutions.ensure_integrity = False
+>>> City.cultural_institutions.ensure_integrity = True
+
+>>> fixer.fix_reference_counts()
+[]
+>>> dict(manager.reference_count)
+{u'/rosenkeller': 1, u'/jena': 1}
+>>> jena.cultural_institutions._ensured_usage_count
+1
+>>> cospeda.cultural_institutions._ensured_usage_count
+0
+
+If the fixer encounters a problem such as a reference that cannot be resolved,
+it will report the issue but try to do its best otherwise. To see this, we
+change all conceivable counts inconsistently, introduce a dangling reference
+and let the fixer try to clean up the mess:
+
+>>> manager.reference_count[u'/jena'] = 5
+>>> del manager.reference_count[u'/rosenkeller']
+>>> manager.reference_count[u'/cospeda'] = 1
+>>> jena.cultural_institutions._ensured_usage_count = 0
+>>> cospeda.cultural_institutions._ensured_usage_count = 2
+
+>>> jena.cultural_institutions._data.insert(u'/stadium')
+1
+
+>>> fixer.fix_reference_counts()
+[(u'/jena', 'cultural_institutions',
+  "Reference target u'/stadium' no longer exists.")]
+>>> dict(manager.reference_count)
+{u'/rosenkeller': 1, u'/jena': 1}
+>>> jena.cultural_institutions._ensured_usage_count
+1
+>>> cospeda.cultural_institutions._ensured_usage_count
+0
