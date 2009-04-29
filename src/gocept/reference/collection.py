@@ -54,19 +54,21 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
         getattr(instance, self.__name__).unreference(target)
 
     def _unregister(self, instance):
-        if not self.needs_registration(instance):
-            return
         target_set = gocept.reference.reference.get_storage(
             instance).get(self.__name__)
-        if target_set is not None:
+        if target_set is None:
+            return
+        target_set.discard_usage(instance, self.__name__)
+        if self.needs_registration(instance):
             target_set.unregister_usage()
 
     def _register(self, instance):
-        if not self.needs_registration(instance):
-            return
         target_set = gocept.reference.reference.get_storage(
             instance).get(self.__name__)
-        if target_set is not None:
+        if target_set is None:
+            return
+        target_set.add_usage(instance, self.__name__)
+        if self.needs_registration(instance):
             target_set.register_usage()
 
 
@@ -228,24 +230,3 @@ class InstrumentedSet(persistent.Persistent):
         for key in list(self._data):
             value = gocept.reference.reference.lookup(key)
             self.remove(value)
-
-
-def find_instrumented_sets(obj):
-    for name in dir(obj):
-        attr = getattr(obj, name, None)
-        if isinstance(attr, InstrumentedSet):
-            yield name, attr
-
-
-@zope.component.adapter(zope.interface.Interface,
-                        zope.container.interfaces.IObjectAddedEvent)
-def ensure_usage_registration(obj, event):
-    for name, value in find_instrumented_sets(obj):
-        value.add_usage(obj, name)
-
-
-@zope.component.adapter(zope.interface.Interface,
-                        zope.container.interfaces.IObjectRemovedEvent)
-def ensure_usage_unregistration(obj, event):
-    for name, value in find_instrumented_sets(obj):
-        value.discard_usage(obj, name)
