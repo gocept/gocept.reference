@@ -23,14 +23,18 @@ class ReferenceManager(persistent.Persistent,
         self.backreference_cache = {} # don't store class-related information
                                       # persistently
 
-    def register_reference(self, target):
+    def register_reference(self, target, count=1):
         """Register a new reference to the given target."""
+        if count == 0:
+            return
         current = self.reference_count.get(target, 0)
-        self.reference_count[target] = current + 1
+        self.reference_count[target] = current + count
 
-    def unregister_reference(self, target):
+    def unregister_reference(self, target, count=1):
         """Register that a reference to the given target was removed."""
-        new = self.reference_count[target] - 1
+        if count == 0:
+            return
+        new = self.reference_count[target] - count
         if new == 0:
             del self.reference_count[target]
         else:
