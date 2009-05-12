@@ -116,11 +116,19 @@ True
 >>> bart.parent is homer
 True
 
-Removing bart from homer's children again will reset bart's parent:
+Removing bart from homer's children again will reset bart's parent. This can
+be done by either removing bart from out of the set of home's children, or by
+replacing that set by an empty one:
 
 >>> homer.children.remove(bart)
 >>> homer.children
 InstrumentedSet([])
+>>> bart.parent
+
+>>> homer.children.add(bart)
+>>> bart.parent is homer
+True
+>>> homer.children = set()
 >>> bart.parent
 
 The same referencing and dereferencing can be achieved by setting and
@@ -141,6 +149,7 @@ InstrumentedSet([])
 
 Manipulating homer's children using the other methods of the set API works as
 expected[#set-api]_.
+
 
 .. [#set-api] Let's demonstrate some further methods of an InstrumentedSet's
     set API:

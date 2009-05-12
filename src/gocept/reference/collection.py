@@ -120,7 +120,13 @@ class InstrumentedSet(persistent.Persistent):
         else:
             del self._usage[key]
 
-        # XXX remove back-references, possibly requires a backref counter
+        collection = getattr(instance.__class__, collection_name)
+        if collection.back_reference:
+            manager = gocept.reference.reference.get_manager()
+            for target in self:
+                other = manager.lookup_backreference(
+                    target, collection.back_reference)
+                other.unreference(target, instance)
 
     def register_usage(self):
         self._ensured_usage_count += 1
