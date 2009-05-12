@@ -47,11 +47,11 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
             value.add_usage(instance, self.name(instance))
             self._register(instance)
 
-    def reference(self, instance, target):
-        getattr(instance, self.__name__).reference(target)
+    def reference(self, instance, targets):
+        getattr(instance, self.__name__).reference(targets)
 
-    def unreference(self, instance, target):
-        getattr(instance, self.__name__).unreference(target)
+    def unreference(self, instance, targets):
+        getattr(instance, self.__name__).unreference(targets)
 
     def _unregister(self, instance):
         target_set = gocept.reference.reference.get_storage(
@@ -98,11 +98,7 @@ class InstrumentedSet(persistent.Persistent):
             instances = self._find_backreferences()[backref]
             for target in self:
                 other = manager.lookup_backreference(target, backref)
-                if (len(instances) > 1
-                    and not isinstance(other, ReferenceCollection)):
-                    transaction.doom()
-                    raise ValueError('Ambiguous back-reference.')
-                other.reference(target, instance)
+                other.reference(target, [instance])
 
     def discard_usage(self, instance, collection_name):
         try:
@@ -126,7 +122,7 @@ class InstrumentedSet(persistent.Persistent):
             for target in self:
                 other = manager.lookup_backreference(
                     target, collection.back_reference)
-                other.unreference(target, instance)
+                other.unreference(target, [instance])
 
     def register_usage(self):
         self._ensured_usage_count += 1
@@ -168,16 +164,18 @@ class InstrumentedSet(persistent.Persistent):
     def __repr__(self):
         return 'InstrumentedSet(%r)' % list(self._data)
 
-    def reference(self, target):
-        key = zope.traversing.api.getPath(target)
-        if key not in self._data:
-            self._data.insert(key)
-            self._register_key(key)
+    def reference(self, targets):
+        for target in targets:
+            key = zope.traversing.api.getPath(target)
+            if key not in self._data:
+                self._data.insert(key)
+                self._register_key(key)
 
-    def unreference(self, target):
-        key = zope.traversing.api.getPath(target)
-        self._data.remove(key)
-        self._unregister_key(key)
+    def unreference(self, targets):
+        for target in targets:
+            key = zope.traversing.api.getPath(target)
+            self._data.remove(key)
+            self._unregister_key(key)
 
     def _find_backreferences(self):
         backrefs = {}
@@ -189,33 +187,27 @@ class InstrumentedSet(persistent.Persistent):
                                gocept.reference.reference.ReferenceBase)
                     and collection.back_reference):
                     backrefs.setdefault(
-                        collection.back_reference, set()).add(instance)
+                        collection.back_reference, []).append(instance)
         return backrefs
 
     def add(self, value):
         old_length = len(self._data)
-        self.reference(value)
+        self.reference([value])
         if old_length == len(self._data):
             return
 
         manager = gocept.reference.reference.get_manager()
         for backref, instances in self._find_backreferences().iteritems():
             other = manager.lookup_backreference(value, backref)
-            if (len(instances) > 1
-                and not isinstance(other, ReferenceCollection)):
-                transaction.doom()
-                raise ValueError('Ambiguous back-reference.')
-            for instance in instances:
-                other.reference(value, instance)
+            other.reference(value, instances)
 
     def remove(self, value):
-        self.unreference(value)
+        self.unreference([value])
 
         manager = gocept.reference.reference.get_manager()
         for backref, instances in self._find_backreferences().iteritems():
             other = manager.lookup_backreference(value, backref)
-            for instance in instances:
-                other.unreference(value, instance)
+            other.unreference(value, instances)
 
     def update(self, values):
         for value in values:
