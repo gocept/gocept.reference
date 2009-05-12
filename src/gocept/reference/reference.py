@@ -109,14 +109,19 @@ class Reference(ReferenceBase):
         return lookup(target_key)
 
     def __set__(self, instance, value):
-        self.reference(instance, value)
+        self.reference(instance, [value])
         if self.back_reference and value is not None:
             other = get_manager().lookup_backreference(
                 value, self.back_reference)
-            other.reference(value, instance)
+            other.reference(value, [instance])
 
     @find_name
-    def reference(self, instance, target):
+    def reference(self, instance, targets):
+        if len(targets) != 1:
+            transaction.doom()
+            raise ValueError('Ambiguous back-reference.')
+        target = targets[0]
+
         if self.back_reference:
             self._clear_backref(instance)
 
@@ -130,7 +135,11 @@ class Reference(ReferenceBase):
         self._register(instance)
 
     @find_name
-    def unreference(self, instance, target):
+    def unreference(self, instance, targets):
+        if (len(targets) != 1
+            or getattr(instance, self.__name__) is not targets[0]):
+            raise ValueError('Reference target mismatch while unregistering.')
+
         self._unregister(instance)
         storage = get_storage(instance)
         storage[self.__name__] = None
@@ -163,4 +172,4 @@ class Reference(ReferenceBase):
             return
         other = get_manager().lookup_backreference(
             target, self.back_reference)
-        other.unreference(target, instance)
+        other.unreference(target, [instance])
