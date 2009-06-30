@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.7.2 (unreleased)
+0.7.2 (2009-06-30)
 ==================
 
 - Fixed generation added in previous version.
