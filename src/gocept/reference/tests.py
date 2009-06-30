@@ -4,7 +4,6 @@
 """Tests for gocept.reference"""
 
 import unittest
-import zope.app.testing.functional
 import zope.interface.verify
 
 import gocept.reference.content
