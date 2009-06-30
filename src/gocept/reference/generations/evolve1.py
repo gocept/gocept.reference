@@ -2,11 +2,19 @@
 # See also LICENSE.txt
 
 import gocept.reference.fix
+import zope.site.hooks
+import zope.app.generations.utility
 
 
 def evolve(context):
     """Create usage counts of reference collections."""
-    errors = gocept.reference.fix.Fixer().fix_reference_counts()
+    old_site = zope.site.hooks.getSite()
+    root = zope.app.generations.utility.getRootFolder(context)
+    try:
+        zope.site.hooks.setSite(root)
+        errors = gocept.reference.fix.Fixer().fix_reference_counts()
+    finally:
+        zope.site.hooks.setSite(old_site)
     if errors:
         print ('The following errors were encountered while trying to update '
                'gocept.reference reference counts:')
