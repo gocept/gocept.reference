@@ -1,9 +1,11 @@
-=======
++=======
 Changes
 =======
 
 0.7.2 (unreleased)
 ==================
+
+- Fixed generation added in previous version.
 
 
 0.7.1 (2009-04-28)
