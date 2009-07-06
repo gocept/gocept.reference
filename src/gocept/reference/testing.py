@@ -72,6 +72,8 @@ class Man(zope.container.contained.Contained):
 
     wife = gocept.reference.Reference(back_reference='marriage')
 
+    partner = gocept.reference.Reference(back_reference='partnership')
+
 
 class Woman(zope.container.contained.Contained):
 
@@ -79,6 +81,8 @@ class Woman(zope.container.contained.Contained):
         zope.annotation.interfaces.IAttributeAnnotatable)
 
     husband = gocept.reference.Reference(back_reference='marriage')
+
+    partner = gocept.reference.Reference(back_reference='partnership')
 
 
 class Parent(zope.container.contained.Contained):
@@ -88,6 +92,9 @@ class Parent(zope.container.contained.Contained):
 
     children = gocept.reference.ReferenceCollection(
         back_reference='parent-child')
+
+    family = gocept.reference.ReferenceCollection(
+        back_reference='family')
 
     def __init__(self):
         self.children = set()
@@ -99,3 +106,5 @@ class Child(zope.container.contained.Contained):
         zope.annotation.interfaces.IAttributeAnnotatable)
 
     parent = gocept.reference.Reference(back_reference='parent-child')
+
+    family_head = gocept.reference.Reference(back_reference='family')
