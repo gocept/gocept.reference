@@ -23,10 +23,12 @@ IAttributeAnnotatable as references are stored as annotations:
 >>> class Man(Contained):
 ...     zope.interface.implements(IAttributeAnnotatable)
 ...     wife = gocept.reference.Reference(back_reference='marriage')
+...     partner = gocept.reference.Reference(back_reference='partnership')
 
 >>> class Woman(Contained):
 ...     zope.interface.implements(IAttributeAnnotatable)
 ...     husband = gocept.reference.Reference(back_reference='marriage')
+...     partner = gocept.reference.Reference(back_reference='partnership')
 
 As instances of classes defined in a doctest cannot be made persistent, we
 import implementations of the classes from a real Python module:
@@ -79,6 +81,26 @@ True
 >>> jane.husband is None
 True
 
+Multiple back-reference relations between the same two objects are completely
+independent of each other:
+
+>>> john.wife = jane
+>>> john.partner = jane
+>>> jane.husband is john
+True
+>>> jane.partner is john
+True
+
+>>> jane.partner = None
+>>> john.wife is jane
+True
+>>> john.partner is None
+True
+
+>>> jane.husband = None
+>>> john.wife is None
+True
+
 
 Back-references involving reference collections (one-to-many)
 =============================================================
@@ -90,6 +112,8 @@ collection of instances of the other:
 ...     zope.interface.implements(IAttributeAnnotatable)
 ...     children = gocept.reference.ReferenceCollection(
 ...         back_reference='parent-child')
+...     family = gocept.reference.ReferenceCollection(
+...         back_reference='family')
 ...     def __init__(self):
 ...         self.children = set()
 
@@ -97,6 +121,7 @@ collection of instances of the other:
 >>> class Child(Contained):
 ...     zope.interface.implements(IAttributeAnnotatable)
 ...     parent = gocept.reference.Reference(back_reference='parent-child')
+...     family_head = gocept.reference.Reference(back_reference='family')
 
 >>> from gocept.reference.testing import Parent, Child
 
@@ -149,6 +174,67 @@ InstrumentedSet([])
 
 Manipulating homer's children using the other methods of the set API works as
 expected[#set-api]_.
+
+Multiple back-references between two objects behave as expected even if they
+share a single InstrumentedSet:
+
+>>> homer.children = set()
+>>> homer.family = homer.children
+>>> homer.children is homer.family
+True
+
+>>> homer.children.add(bart)
+>>> homer.children
+InstrumentedSet([u'/bart'])
+>>> homer.family
+InstrumentedSet([u'/bart'])
+>>> bart.parent is homer
+True
+>>> bart.family_head is homer
+True
+
+>>> homer.family = set()
+>>> homer.children
+InstrumentedSet([u'/bart'])
+>>> bart.parent is homer
+True
+>>> bart.family_head is None
+True
+
+>>> homer.family = homer.children
+>>> homer.children
+InstrumentedSet([u'/bart'])
+>>> bart.parent is homer
+True
+>>> bart.family_head is homer
+True
+
+>>> homer.children.remove(bart)
+>>> homer.family
+InstrumentedSet([])
+>>> bart.parent is None
+True
+>>> bart.family_head is None
+True
+
+>>> bart.parent = homer
+>>> homer.children
+InstrumentedSet([u'/bart'])
+>>> homer.family
+InstrumentedSet([u'/bart'])
+>>> bart.family_head is homer
+True
+
+>>> bart.family_head = homer #XXX
+>>> bart.parent = None
+>>> homer.children
+InstrumentedSet([])
+>>> homer.family
+InstrumentedSet([])
+>>> bart.family_head is None
+True
+
+# XXX homer.children = set() (Sets wieder asynchron machen)
 
 
 .. [#set-api] Let's demonstrate some further methods of an InstrumentedSet's
