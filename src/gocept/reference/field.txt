@@ -2,8 +2,8 @@
 zope.schema field
 =================
 
-To comply with zope.schema, gocept.reference has an own set field
-which has the internally used InstrumentedSet class as type.
+To comply with ``zope.schema``, ``gocept.reference`` has an own `set` field
+which has the internally used `InstrumentedSet` class as `type`.
 
 For demonstration purposes we create an interface which uses both
 ``gocept.reference.field.Set`` and ``zope.schema.Set``:
