@@ -55,7 +55,7 @@ class if there is a missing attribute:
 True
 
 This function is not fully fool proof because it also works with the
-instance wich has the attribute set. The reason for this behavior is
+instance which has the attribute set. The reason for this behavior is
 that the interface does not tell that the attribute must be
 implemented as a reference:
 
@@ -77,10 +77,13 @@ Traceback (most recent call last):
 BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
 The city attribute was not provided.
 
+Like ``zope.interface.verify.verifyObject`` detects, too:
+
 >>> zope.interface.verify.verifyObject(IAddress, strange_address)
 Traceback (most recent call last):
 BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
 The city attribute was not provided.
+
 
 Reference collections
 =====================
