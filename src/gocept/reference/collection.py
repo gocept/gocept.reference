@@ -30,7 +30,7 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
     @gocept.reference.reference.find_name
     def __set__(self, instance, value):
         if isinstance(value, (set, sets.BaseSet)):
-            value = InstrumentedSet(value, self)
+            value = InstrumentedSet(value)
         if value is not None and not isinstance(value, InstrumentedSet):
             raise TypeError("%r can't be assigned as a reference collection: "
                             "only sets are allowed." % value)
@@ -61,7 +61,7 @@ class InstrumentedSet(persistent.Persistent):
 
     _ensured_usage_count = 0
 
-    def __init__(self, src, collection):
+    def __init__(self, src):
         # Convert objects to their keys
         self._data = BTrees.OOBTree.TreeSet(
             zope.traversing.api.getPath(item) for item in src)
