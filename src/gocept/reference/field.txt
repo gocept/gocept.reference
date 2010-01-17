@@ -56,9 +56,9 @@ While ``zope.schema.Set`` fails at ``InstrumentedSet`` as expected:
 
 >>> ICollector['zs_items'].bind(collector).validate(collector.zs_items)
 Traceback (most recent call last):
-WrongType: (InstrumentedSet([]), <type 'set'>)
+WrongType: (InstrumentedSet([]), <type 'set'>, 'zs_items')
 >>> ICollector['zs_items'].bind(collector).validate(set([])) is None
 True
 >>> ICollector['zs_items'].bind(collector).validate([])
 Traceback (most recent call last):
-WrongType: ([], <type 'set'>)
+WrongType: ([], <type 'set'>, 'zs_items')
