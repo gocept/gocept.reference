@@ -58,6 +58,7 @@ setup(
                         'zope.traversing',
                         'zope.deferredimport',
                         'zope.container',
+                        'zope.schema >= 3.6.0',
                         'zope.site',
                         'zope.app.generations >= 3.5.0',
                         ],
