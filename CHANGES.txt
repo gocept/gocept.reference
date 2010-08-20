@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.8.0 (unreleased)
+0.8.0 (2010-08-20)
 ==================
 
 - Updated tests to work with `zope.schema` 3.6.
