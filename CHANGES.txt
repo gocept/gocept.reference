@@ -9,6 +9,8 @@ Changes
 
 - Removed unused parameter of ``InstrumentedSet.__init__``.
 
+- Avoid ``sets`` module as it got deprecated in Python 2.6.
+
 
 0.7.2 (2009-06-30)
 ==================

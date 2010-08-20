@@ -3,8 +3,6 @@
 # See also LICENSE.txt
 """Reference lists."""
 
-import sets
-
 import BTrees.OOBTree
 import persistent
 import transaction
@@ -29,7 +27,7 @@ class ReferenceCollection(gocept.reference.reference.ReferenceBase):
 
     @gocept.reference.reference.find_name
     def __set__(self, instance, value):
-        if isinstance(value, (set, sets.BaseSet)):
+        if isinstance(value, (set, frozenset)):
             value = InstrumentedSet(value)
         if value is not None and not isinstance(value, InstrumentedSet):
             raise TypeError("%r can't be assigned as a reference collection: "
