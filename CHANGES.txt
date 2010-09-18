@@ -5,7 +5,7 @@ Changes
 0.8.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Depending on ``zope.generations`` instead of ``zope.app.generations``.
 
 
 0.8.0 (2010-08-20)

@@ -13,8 +13,8 @@
   <!-- The exclamation mark in the name is intentional so the schema
   manager is installed before depending packages. -->
   <utility name="!gocept.reference"
-  provides="zope.app.generations.interfaces.ISchemaManager"
-  component=".generations.manager" />
+           provides="zope.generations.interfaces.ISchemaManager"
+           component=".generations.manager" />
 
   <class class=".collection.InstrumentedSet">
     <allow attributes="__iter__" />

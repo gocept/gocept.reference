@@ -3,13 +3,13 @@
 
 import gocept.reference.fix
 import zope.site.hooks
-import zope.app.generations.utility
+import zope.generations.utility
 
 
 def evolve(context):
     """Create usage counts of reference collections."""
     old_site = zope.site.hooks.getSite()
-    root = zope.app.generations.utility.getRootFolder(context)
+    root = zope.generations.utility.getRootFolder(context)
     try:
         zope.site.hooks.setSite(root)
         errors = gocept.reference.fix.Fixer().fix_reference_counts()
