@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.8.1 (unreleased)
+0.9.0 (2010-09-18)
 ==================
 
 - Depending on ``zope.generations`` instead of ``zope.app.generations``.
