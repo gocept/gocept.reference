@@ -4,7 +4,7 @@
 # $Id$
 """Database initialisation and upgrading."""
 
-from zope.app.generations.generations import SchemaManager
+from zope.generations.generations import SchemaManager
 
 
 manager = SchemaManager(
