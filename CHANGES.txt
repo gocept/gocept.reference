@@ -2,6 +2,12 @@
 Changes
 =======
 
+0.5.2adb (2011-01-10)
+======================
+
+- Return None instead of a Lookup-Error when a reference can not be looked up.
+
+
 0.5.2 (2008-10-16)
 ==================
 
