@@ -99,7 +99,10 @@ class Reference(ReferenceBase):
             raise AttributeError(self.__name__)
         if target_key is None:
             return None
-        return self.lookup(target_key)
+        try:
+            return self.lookup(target_key)
+        except gocept.reference.interfaces.LookupError:
+            return None
 
     @find_name
     def __set__(self, instance, value):

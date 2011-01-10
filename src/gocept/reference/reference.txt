@@ -147,8 +147,6 @@ True
 
 >>> del root['jena']
 >>> fuchsturm.city
-Traceback (most recent call last):
-LookupError: Target u'/jena' of reference 'city' no longer exists.
 
 
 Changing the location state of the source
