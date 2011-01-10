@@ -28,7 +28,10 @@ class ReferenceManager(persistent.Persistent,
 
     def unregister_reference(self, target):
         """Register that a reference to the given target was removed."""
-        new = self.reference_count[target] - 1
+        try:
+            new = self.reference_count[target] - 1
+        except KeyError:
+            return
         if new == 0:
             del self.reference_count[target]
         else:
