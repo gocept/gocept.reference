@@ -1,0 +1,243 @@
+===================
+Referencing objects
+===================
+
+Simple references
+=================
+
+For working with references you have to have a located site set:
+
+>>> import zope.app.component.hooks
+>>> root = getRootFolder()
+>>> zope.app.component.hooks.setSite(root)
+
+For demonstration purposes we define two classes, one for referenced objects,
+the other defining the reference. Classes using references have to implement
+IAttributeAnnotatable as references are stored as annotations:
+
+>>> from zope.app.container.contained import Contained
+>>> import gocept.reference
+>>> import zope.interface
+>>> from zope.annotation.interfaces import IAttributeAnnotatable
+
+>>> class Address(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     city = gocept.reference.Reference()
+
+>>> class City(Contained):
+...     pass
+
+As instances of classes defined in a doctest cannot be persisted, we import
+implementations of the classes from a real Python module:
+
+>>> from gocept.reference.tests import Address, City
+
+The referenced objects must be stored in the ZODB and must be located:
+
+>>> root['dessau'] = City()
+>>> root['halle'] = City()
+>>> root['jena'] = City()
+
+In order to reference an object, the object only needs to be assigned to the
+attribute implemented as a reference descriptor:
+
+>>> theuni = Address()
+>>> theuni.city = root['dessau']
+>>> theuni.city
+<gocept.reference.tests.City object at 0x...>
+
+It is also possible to assign `None` to let the reference point to no
+object:
+
+>>> theuni.city = None
+>>> print theuni.city
+None
+
+Values can be deleted, the descriptor raises an AttributeError then:
+
+>>> del theuni.city
+>>> theuni.city
+Traceback (most recent call last):
+AttributeError: city
+
+Only contained objects can be assigned to a reference that has
+integrity ensurance enabled:
+
+>>> theuni.city = 12
+Traceback (most recent call last):
+TypeError: ...
+
+
+Integrity-ensured references
+============================
+
+>>> class Monument(Contained):
+...      zope.interface.implements(IAttributeAnnotatable)
+...      city = gocept.reference.Reference(ensure_integrity=True)
+>>> from gocept.reference.tests import Monument
+
+Located source
+--------------
+
+Referential integrity can be ensured if the source of the reference is
+located:
+
+>>> root['fuchsturm'] = Monument()
+>>> root['fuchsturm'].city = root['dessau']
+>>> root['fuchsturm'].city is root['dessau']
+True
+
+>>> import transaction
+>>> transaction.commit()
+
+>>> del root['dessau']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move
+  <gocept.reference.tests.City object at 0x...>.
+  The (sub-)object <gocept.reference.tests.City object at 0x...> is
+  still being referenced.
+
+>>> transaction.commit()
+Traceback (most recent call last):
+DoomedTransaction
+
+>>> transaction.abort()
+>>> 'dessau' in root
+True
+
+To check whether an object is referenced, it can be adapted to
+IReferenceTarget:
+
+>>> from gocept.reference.interfaces import IReferenceTarget
+>>> IReferenceTarget(root['dessau']).is_referenced()
+True
+
+>>> root['fuchsturm'].city = None
+>>> IReferenceTarget(root['dessau']).is_referenced()
+False
+
+>>> del root['dessau']
+>>> 'dessau' in root
+False
+
+XXX References will also be correctly cancelled when the attribute or the
+source is deleted.
+
+>>> del root['fuchsturm']
+
+Non-located source
+------------------
+
+If the source of a reference is not located, we can do anything we want with
+references, including breaking them:
+
+>>> fuchsturm = Monument()
+>>> fuchsturm.city =  root['jena']
+>>> fuchsturm.city is root['jena']
+True
+
+>>> del fuchsturm.city
+>>> fuchsturm.city
+Traceback (most recent call last):
+AttributeError: city
+
+>>> fuchsturm.city = root['jena']
+>>> fuchsturm.city is root['jena']
+True
+
+>>> del root['jena']
+>>> fuchsturm.city
+
+
+Changing the location state of the source
+-----------------------------------------
+
+We cannot put an object with a broken reference back into containment since
+referential integrity is not given:
+
+>>> transaction.commit()
+
+>>> root['fuchsturm'] = fuchsturm
+Traceback (most recent call last):
+LookupError: Target u'/jena' of reference 'city' no longer exists.
+
+The transaction was doomed, let's recover the last working state:
+
+>>> transaction.commit()
+Traceback (most recent call last):
+DoomedTransaction
+
+>>> transaction.abort()
+
+We have to repair the fuchsturm object by hand as it was not part of the
+transaction:
+
+>>> fuchsturm.__parent__ = fuchsturm.__name__ = None
+
+>>> from gocept.reference.interfaces import IReferenceSource
+>>> IReferenceSource(fuchsturm).verify_integrity()
+False
+
+>>> IReferenceTarget(root['halle']).is_referenced()
+False
+>>> fuchsturm.city = root['halle']
+>>> IReferenceSource(fuchsturm).verify_integrity()
+True
+>>> IReferenceTarget(root['halle']).is_referenced()
+False
+
+>>> root['fuchsturm'] = fuchsturm
+>>> IReferenceTarget(root['halle']).is_referenced()
+True
+
+>>> fuchsturm = root['fuchsturm']
+>>> del root['fuchsturm']
+>>> fuchsturm.city is root['halle']
+True
+
+>>> del root['halle']
+>>> 'halle' in root
+False
+
+Hierarchical structures
+-----------------------
+
+Trying to delete objects that contain referenced objects with ensured
+integrity is also forbidden:
+
+>>> import zope.app.container.sample
+>>> root['folder'] = zope.app.container.sample.SampleContainer()
+>>> root['folder']['frankfurt'] = City()
+>>> messeturm = Monument()
+>>> messeturm.city = root['folder']['frankfurt']
+>>> root['messeturm'] = messeturm
+
+Deleting the `folder` will fail now, because a subobject is being referenced.
+The reference target API (IReferenceTarget) allows us to inspect it
+beforehand:
+
+>>> from gocept.reference.interfaces import IReferenceTarget
+>>> folder_target = IReferenceTarget(root['folder'])
+>>> folder_target.is_referenced()
+True
+>>> folder_target.is_referenced(recursive=False)
+False
+
+
+>>> del root['folder']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move
+  <zope.app.container.sample.SampleContainer object at 0x...>.
+  The (sub-)object <gocept.reference.tests.City object at 0x...> is still
+  being referenced.
+
+
+Upgrading from unconstrained to constrained references
+------------------------------------------------------
+
+XXX
+
+Downgrading from integrity ensured references to unensured
+----------------------------------------------------------
+
+XXX

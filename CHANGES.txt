@@ -1,0 +1,60 @@
+=======
+Changes
+=======
+
+0.5.2adb (2011-01-10)
+======================
+
+- Return None instead of a Lookup-Error when a reference can not be looked up.
+
+
+0.5.2 (2008-10-16)
+==================
+
+- Fixed: When upgrading gocept.reference to version 0.5.1, a
+  duplication error was raised.
+
+
+0.5.1 (2008-10-10)
+==================
+
+- Made sure that the reference manager is installed using
+  zope.app.generations before packages depending on gocept.reference.
+
+0.5 (2008-09-11)
+================
+
+- Added specialized variant of zope.interface.verify.verifyObject
+  which can handle references and reference collections correctly.
+
+
+0.4 (2008-09-08)
+================
+
+- Moved InstrumentedSet to use BTree data structures for better performance.
+
+- Added `update` method to InstrumentedSet.
+
+- Updated documentation.
+
+
+0.3 (2008-04-22)
+================
+
+- Added a `set` implementation for referencing collections of objects.
+
+0.2 (2007-12-21)
+================
+
+- Extended the API for `IReferenceTarget.is_referenced` to allow specifying
+  whether to query for references recursively or only on a specific object.
+  By default the query is recursive. 
+
+- Fixed bug in the event handler for enforcing ensured constraints: referenced
+  objects could be deleted if they were deleted together with a parent
+  location.
+
+0.1 (2007-12-20)
+================
+
+Initial release.

@@ -1,0 +1,23 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.traversing" />
+  <include package="zope.annotation" />
+
+  <subscriber handler=".content.ensure_referential_integrity" />
+  <subscriber handler=".content.ensure_registration" />
+  <subscriber handler=".content.ensure_unregistration" />
+
+  <adapter factory=".content.ReferenceSource" />
+  <adapter factory=".content.ReferenceTarget" />
+
+  <!-- The exclamation mark in the name is intentional so the schema
+  manager is installed before depending packages. -->
+  <utility name="!gocept.reference"
+  provides="zope.app.generations.interfaces.ISchemaManager"
+  component=".generations.manager" />
+
+  <class class=".collection.InstrumentedSet">
+    <allow attributes="__iter__" />
+  </class>
+
+</configure>

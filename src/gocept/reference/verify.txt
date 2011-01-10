@@ -1,0 +1,104 @@
+=============================
+Verifying reference existence
+=============================
+
+It is not so easy to verify a class implements an attribute as a
+reference as their usage is transparent. 
+
+References
+==========
+
+Let's build an example interface and class using a reference:
+
+>>> import zope.interface
+>>> import gocept.reference
+>>> class IAddress(zope.interface.Interface):
+...     city = zope.interface.Attribute("City the address belonges to.")
+>>> class Address(object):
+...     zope.interface.implements(IAddress)
+...     city = gocept.reference.Reference()
+
+verifyClass does not check for attributes:
+
+>>> import zope.interface.verify
+>>> zope.interface.verify.verifyClass(IAddress, Address)
+True
+
+verifyObject tells that the object does not completly fulfill the
+interface:
+
+>>> zope.interface.verify.verifyObject(IAddress, Address())
+Traceback (most recent call last):
+BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
+The city attribute was not provided.
+
+Setting a value on the reference attribute does not help because after
+that it ist not possible to check if there is a reference as the
+reference is transparent. Even worse, a class which does not define
+the required attribute and an instance thereof with the attribute set,
+lets the test pass without defining the reference at all:
+
+>>> class AddressWithoutReference(object):
+...     zope.interface.implements(IAddress)
+>>> address_without_ref = AddressWithoutReference()
+>>> address_without_ref.city = None
+>>> zope.interface.verify.verifyObject(IAddress, address_without_ref)
+True
+
+So we need a special verifyObject function which does a check on the
+class if there is a missing attribute:
+
+>>> import gocept.reference.verify
+>>> gocept.reference.verify.verifyObject(IAddress, Address())
+True
+
+This function is not fully fool proof because it also works with the
+instance wich has the attribute set. The reason for this behavior is
+that the interface does not tell that the attribute must be
+implemented as a reference:
+
+>>> gocept.reference.verify.verifyObject(IAddress, address_without_ref)
+True
+
+But if the attribute which does not exist on the instance does not
+have a reference descriptior on the class the gocept.reference's
+verifyObject can detect this:
+
+>>> class StrangeAddress(object):
+...     zope.interface.implements(IAddress)
+...     @property
+...     def city(self):
+...         raise AttributeError
+>>> strange_address = StrangeAddress()
+>>> gocept.reference.verify.verifyObject(IAddress, strange_address)
+Traceback (most recent call last):
+BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
+The city attribute was not provided.
+
+>>> zope.interface.verify.verifyObject(IAddress, strange_address)
+Traceback (most recent call last):
+BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
+The city attribute was not provided.
+
+Reference collections
+=====================
+
+Reference collections suffer the same problem when checked with
+zope.inferface.verify.verfyObject:
+
+>>> class ICity(zope.interface.Interface):
+...     cultural_institutions = zope.interface.Attribute(
+...         "Cultural institutions the city has.")
+>>> class City(object):
+...     zope.interface.implements(ICity)
+...     cultural_institutions = gocept.reference.ReferenceCollection()
+
+>>> zope.interface.verify.verifyObject(ICity, City())
+Traceback (most recent call last):
+BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.ICity>
+The cultural_institutions attribute was not provided.
+
+But the special variant in gocept.reference works for collections, too:
+
+>>> gocept.reference.verify.verifyObject(ICity, City())
+True

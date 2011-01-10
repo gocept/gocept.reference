@@ -1,0 +1,194 @@
+=====================
+Reference collections
+=====================
+
+To have an attribute of an object reference multiple other objects using a
+collection you can use a ReferenceCollection property.
+
+A collection behaves like a set and manages references while objects are added
+or removed from the set:
+
+>>> import zope.app.component.hooks
+>>> root = getRootFolder()
+>>> zope.app.component.hooks.setSite(root)
+
+We need a class defining a ReferenceCollection. (Importing the class
+from the test module is necassary to persist instances of the class):
+
+>>> from zope.app.container.contained import Contained
+>>> import gocept.reference
+>>> import zope.interface
+>>> from zope.annotation.interfaces import IAttributeAnnotatable
+
+>>> class City(Contained):
+...     zope.interface.implements(IAttributeAnnotatable)
+...     cultural_institutions = gocept.reference.ReferenceCollection(
+...         ensure_integrity=True)
+>>> from gocept.reference.tests import City
+
+Initially, the collection isn't set and accessing it causes an
+AttributeError:
+
+>>> halle = City()
+>>> halle.cultural_institutions
+Traceback (most recent call last):
+AttributeError: cultural_institutions
+
+So we define some cultural institutions:
+
+>>> class CulturalInstitution(Contained):
+...     title = None
+>>> from gocept.reference.tests import CulturalInstitution
+
+>>> root['theatre'] = CulturalInstitution()
+>>> root['cinema'] = CulturalInstitution()
+>>> root['park'] = CulturalInstitution()
+>>> import transaction
+>>> transaction.commit()
+
+Trying to set an individual value instead of a collection, raises a
+TypeError:
+
+>>> halle.cultural_institutions = root['park']
+Traceback (most recent call last):
+TypeError: <gocept.reference.tests.CulturalInstitution object at 0x...> can't be assigned as a reference collection: only sets are allowed.
+
+
+Managing whole sets
+===================
+
+Assigning a set works:
+
+>>> halle.cultural_institutions = set([root['park'], root['cinema']])
+>>> len(halle.cultural_institutions)
+2
+>>> list(halle.cultural_institutions)
+[<gocept.reference.tests.CulturalInstitution object at 0x...>,
+ <gocept.reference.tests.CulturalInstitution object at 0x...>]
+
+As `halle` isn't located yet, the integrity ensurance doesn't notice
+referenced objects being deleted:
+
+>>> del root['cinema']
+
+The result is a broken reference:
+
+>>> list(halle.cultural_institutions)
+Traceback (most recent call last):
+LookupError: Target u'/cinema' of reference 'cultural_institutions' no longer exists.
+
+Also, we can not locate `halle` right now, as long as the reference is broken:
+
+>>> root['halle'] = halle
+Traceback (most recent call last):
+LookupError: Target u'/cinema' of reference 'cultural_institutions' no longer exists.
+
+The transaction was doomed, so we abort:
+
+>>> transaction.abort()
+
+Unfortunately, the `abort` doesn't roll-back the attributes of Halle because it
+wasn't part of the transaction yet (as it couldn't be added to the database).
+We need to clean up manually, otherwise the next assignment won't raise any
+events:
+
+>>> halle.__name__ = None
+>>> halle.__parent__ = None
+
+The cinema is back now, and Halle is in an operational state again:
+
+>>> list(halle.cultural_institutions)
+[<gocept.reference.tests.CulturalInstitution object at 0x...>,
+ <gocept.reference.tests.CulturalInstitution object at 0x...>]
+
+Now we can add it to the database:
+
+>>> root['halle'] = halle
+
+And deleting a referenced object will cause an error:
+
+>>> del root['cinema']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+
+When we remove the referencing collection, the target can be deleted again:
+
+>>> halle.cultural_institutions = None
+>>> del root['cinema']
+
+Managing individual items of sets
+=================================
+
+Note: We did not implement the set API 100%. We'll add methods as we need
+them.
+
+In addition to changing sets by assigning complete new sets, we can modify the
+sets with individual items just as the normal `set` API allows us to do.
+
+We'll start out with an empty set:
+
+>>> root['jena'] = City()
+>>> root['jena'].cultural_institutions = set()
+
+Our reference engine turns this set into a different object which manages the
+references:
+
+>>> ci = root['jena'].cultural_institutions
+>>> ci
+InstrumentedSet([])
+
+We can add new references, by adding objects to this set and the referenced
+integrity is ensured:
+
+>>> ci.add(root['park'])
+>>> del root['park']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+
+Removing and discarding works:
+
+>>> ci.remove(root['park'])
+>>> del root['park']
+>>> root['park'] = CulturalInstitution()
+>>> ci.add(root['park'])
+>>> del root['park']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+>>> ci.discard(root['park'])
+>>> del root['park']
+>>> ci.discard(root['halle'])
+
+Clearing works:
+
+>>> ci.add(root['theatre'])
+>>> del root['theatre']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+>>> ci.clear()
+>>> len(ci)
+0
+>>> del root['theatre']
+
+>>> root['cinema'] = CulturalInstitution()
+>>> root['cinema'].title = 'Cinema'
+>>> ci.add(root['cinema'])
+>>> del root['cinema']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+>>> ci.pop().title
+'Cinema'
+>>> del root['cinema']
+
+Updating works:
+
+>>> root['cinema'] = CulturalInstitution()
+>>> root['theatre'] = CulturalInstitution()
+>>> ci.update([root['cinema'], root['theatre']])
+>>> len(ci)
+2
+>>> del root['cinema']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
+>>> del root['theatre']
+Traceback (most recent call last):
+IntegrityError: Can't delete or move <gocept.reference.tests.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.tests.CulturalInstitution object at 0x...> is still being referenced.
