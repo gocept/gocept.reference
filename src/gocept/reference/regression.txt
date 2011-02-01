@@ -82,5 +82,5 @@ that relied on doing just that:
 
 >>> from gocept.reference.testing import Address
 >>> Address.city.__name__ = None  # reset
->>> Address.city
-<gocept.reference.reference.Reference object at 0x...>
+>>> Address.city.__name__
+'city'
