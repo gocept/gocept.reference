@@ -28,9 +28,12 @@ def find_name(method):
             cls = args[0]
         else:
             cls = instance.__class__
-        for name, attr in cls.__dict__.iteritems():
-            if attr is descriptor:
-                return name
+        # We cannot simply iterate over dir(cls) since trying to get the
+        # attributes would then lead to infinite recursion.
+        for cls_ in cls.mro():
+            for name, attr in cls_.__dict__.iteritems():
+                if attr is descriptor:
+                    return name
         else:
             raise RuntimeError(
                 "Can not automatically find name for reference. "

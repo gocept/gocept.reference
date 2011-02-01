@@ -84,3 +84,13 @@ that relied on doing just that:
 >>> Address.city.__name__ = None  # reset
 >>> Address.city.__name__
 'city'
+
+Also up to 0.9, the algorithm for digging up the attribute name of a reference
+descriptor on a class would not handle references inherited from a base class:
+
+>>> from gocept.reference.testing import Address
+>>> class InheritedAddress(Address):
+...     pass
+>>> Address.city.__name__ = None
+>>> InheritedAddress.city.__name__
+'city'
