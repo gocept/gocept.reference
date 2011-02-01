@@ -5,7 +5,8 @@ Changes
 0.9.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Bug fixed: reference descriptors could not find out their attribute names
+  when read from the class.
 
 
 0.9.0 (2010-09-18)

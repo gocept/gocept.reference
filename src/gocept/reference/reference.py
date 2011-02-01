@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007-2010 gocept gmbh & co. kg
+# Copyright (c) 2007-2011 gocept gmbh & co. kg
 # See also LICENSE.txt
 """References to persistent objects."""
 
@@ -21,18 +21,28 @@ def find_name(method):
     The result is cached during the runtime of the process.
 
     """
-    def find_name_impl(self, instance, *args, **kw):
+    def descriptor_name_by_inspection(descriptor, instance, *args):
+        if instance is None:
+            # We're called via __get__ on a class. In this case, the class is
+            # passed as the next argument after the instance.
+            cls = args[0]
+        else:
+            cls = instance.__class__
+        for name, attr in cls.__dict__.iteritems():
+            if attr is descriptor:
+                return name
+        else:
+            raise AttributeError(
+                "Can not automatically find name for reference. "
+                "Please use the __name__ parameter.")
+
+    def wrapper(self, instance, *args):
         if not self.__name__:
-            for name, attr in instance.__class__.__dict__.items():
-                if self is attr:
-                    self.__name__ = name
-                    break
-            else:
-                raise AttributeError(
-                    "Can not automatically find name for reference. "
-                    "Please use the __name__ parameter.")
-        return method(self, instance, *args, **kw)
-    return find_name_impl
+            self.__name__ = descriptor_name_by_inspection(
+                self, instance, *args)
+        return method(self, instance, *args)
+
+    return wrapper
 
 
 def get_manager():
@@ -126,7 +136,11 @@ class Reference(ReferenceBase):
     def _register(self, instance):
         if not self.needs_registration(instance):
             return
-        target_key = get_storage(instance)[self.__name__]
+        target_key = get_storage(instance).get(self.__name__)
+        if target_key is None:
+            # The reference source is being put under integrity ensurance but
+            # this reference has not yet been set.
+            return
         try:
             lookup(target_key)
         except gocept.reference.interfaces.LookupError:
