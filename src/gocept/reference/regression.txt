@@ -75,3 +75,12 @@ ReferenceCollection attribute, but removed from it later. This should work:
 >>> leipzig.cultural_institutions
 InstrumentedSet([])
 >>> del root['zoo']
+
+Up to version 0.9, reference descriptors could not find out their attribute
+names when read from the class even though there was integrity ensurance code
+that relied on doing just that:
+
+>>> from gocept.reference.testing import Address
+>>> Address.city.__name__ = None  # reset
+>>> Address.city
+<gocept.reference.reference.Reference object at 0x...>
