@@ -9,5 +9,5 @@ from zope.generations.generations import SchemaManager
 
 manager = SchemaManager(
     minimum_generation=1,
-    generation=1,
+    generation=2,
     package_name='gocept.reference.generations')
