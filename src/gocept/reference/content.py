@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007-2010 gocept gmbh & co. kg
+# Copyright (c) 2007-2011 gocept gmbh & co. kg
 # See also LICENSE.txt
 """Interaction between the reference machinery and content objects."""
 
@@ -17,8 +17,8 @@ import gocept.reference.reference
 
 
 def find_references(obj):
-    for name in dir(obj):
-        attr = getattr(obj.__class__, name, None)
+    for name in dir(obj.__class__):
+        attr = getattr(obj.__class__, name)
         if isinstance(attr, gocept.reference.reference.ReferenceBase):
             yield name, attr
 

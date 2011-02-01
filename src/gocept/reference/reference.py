@@ -32,9 +32,9 @@ def find_name(method):
             if attr is descriptor:
                 return name
         else:
-            raise AttributeError(
+            raise RuntimeError(
                 "Can not automatically find name for reference. "
-                "Please use the __name__ parameter.")
+                "This place in the code should never be reached.")
 
     def wrapper(self, instance, *args):
         if not self.__name__:
