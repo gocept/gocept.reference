@@ -30,9 +30,24 @@ class TestInterfaces(unittest.TestCase):
             gocept.reference.manager.ReferenceManager())
 
 
+class TestContentFunctions(unittest.TestCase):
+
+    def test_find_references_handles_broken_attributes(self):
+        class BrokenDescriptor(object):
+            def __get__(self, instance, *args, **kw):
+                raise AttributeError()
+        class BrokenAttribute(object):
+            asdf = BrokenDescriptor()
+        obj = BrokenAttribute()
+        self.assertEquals(
+            [],
+            list(gocept.reference.content.find_references(obj)))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestInterfaces))
+    suite.addTest(unittest.makeSuite(TestContentFunctions))
     suite.addTest(gocept.reference.testing.FunctionalDocFileSuite(
             'reference.txt',
             'collection.txt',

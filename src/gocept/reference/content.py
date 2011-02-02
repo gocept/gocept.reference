@@ -18,7 +18,7 @@ import gocept.reference.reference
 
 def find_references(obj):
     for name in dir(obj.__class__):
-        attr = getattr(obj.__class__, name)
+        attr = getattr(obj.__class__, name, None)
         if isinstance(attr, gocept.reference.reference.ReferenceBase):
             yield name, attr
 
