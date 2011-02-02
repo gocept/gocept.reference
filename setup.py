@@ -12,7 +12,7 @@ def read(filename):
 
 
 name = "gocept.reference"
-version = '0.9.1dev'
+version = '0.9.1'
 
 
 setup(
