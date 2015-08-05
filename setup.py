@@ -1,7 +1,4 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007-2010 gocept gmbh & co. kg
-# See also LICENSE.txt
-
 import os.path
 from setuptools import setup, find_packages
 
@@ -16,22 +13,22 @@ version = '0.9.2dev'
 
 
 setup(
-    name = name,
-    version = version,
-    author = "gocept gmbh & co. kg",
-    author_email = "developers@gocept.com",
-    url = 'http://pypi.python.org/pypi/gocept.reference',
-    description = "Intrinsic references for Zope/ZODB applications.",
-    long_description = (
+    name=name,
+    version=version,
+    author="gocept gmbh & co. kg",
+    author_email="developers@gocept.com",
+    url='http://pypi.python.org/pypi/gocept.reference',
+    description="Intrinsic references for Zope/ZODB applications.",
+    long_description=(
         open('README.txt').read() + "\n\n" +
         read('reference.txt') + "\n\n" +
         read('collection.txt') + "\n\n" +
         read('verify.txt') + "\n\n" +
         read('field.txt') + "\n\n" +
         open('CHANGES.txt').read()),
-    license = "ZPL 2.1",
-    keywords = "zodb zope3 intrinsic reference",
-    classifiers = (
+    license="ZPL 2.1",
+    keywords="zodb zope3 intrinsic reference",
+    classifiers=(
         "Topic :: Software Development",
         "Topic :: Database",
         "Framework :: ZODB",
@@ -43,13 +40,13 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        ),
-    zip_safe = False,
-    packages = find_packages('src'),
-    include_package_data = True,
-    package_dir = {'':'src'},
-    namespace_packages = ['gocept'],
-    install_requires = [
+    ),
+    zip_safe=False,
+    packages=find_packages('src'),
+    include_package_data=True,
+    package_dir={'': 'src'},
+    namespace_packages=['gocept'],
+    install_requires=[
         'ZODB3',
         'setuptools',
         'transaction',
@@ -62,10 +59,10 @@ setup(
         'zope.schema >= 3.6.0',
         'zope.site',
         'zope.traversing',
-        ],
-    extras_require = {
+    ],
+    extras_require={
         'test': ['zope.app.testing',
                  'zope.app.zcmlfiles',
                  ]
-        },
-    )
+    },
+)
