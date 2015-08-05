@@ -16,10 +16,11 @@ setup(
     name=name,
     version=version,
     author="gocept gmbh & co. kg",
-    author_email="developers@gocept.com",
-    url='http://pypi.python.org/pypi/gocept.reference',
+    author_email="mail@gocept.com",
+    url='https://bitbucket.org/gocept/gocept.reference',
     description="Intrinsic references for Zope/ZODB applications.",
     long_description=(
+        open('COPYRIGHT.txt').read() + "\n\n" +
         open('README.txt').read() + "\n\n" +
         read('reference.txt') + "\n\n" +
         read('collection.txt') + "\n\n" +
