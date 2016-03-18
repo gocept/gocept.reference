@@ -1,7 +1,4 @@
 # -*- coding: latin-1 -*-
-# Copyright (c) 2007-2010 gocept gmbh & co. kg
-# See also LICENSE.txt
-
 import doctest
 import os.path
 import zope.annotation.interfaces

@@ -6,6 +6,7 @@ import zope.schema
 import gocept.reference.collection
 import zope.schema._bootstrapinterfaces
 
+
 class Set(zope.schema.Set):
     """A set field using the InstrumentedSet class."""
 
