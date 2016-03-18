@@ -1,6 +1,4 @@
 # vim:fileencoding=utf-8
-# Copyright (c) 2007-2011 gocept gmbh & co. kg
-# See also LICENSE.txt
 """Interaction between the reference machinery and content objects."""
 
 import transaction
@@ -42,7 +40,7 @@ class ReferenceSource(object):
 
     def verify_integrity(self):
         for name, ref in find_references(
-            self.context):
+                self.context):
             target_key = gocept.reference.reference.get_storage(
                 self.context).get(name)
             if target_key:

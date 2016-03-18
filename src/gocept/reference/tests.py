@@ -1,6 +1,4 @@
 # -*- coding: latin-1 -*-
-# Copyright (c) 2007-2010 gocept gmbh & co. kg
-# See also LICENSE.txt
 """Tests for gocept.reference"""
 
 import unittest
@@ -36,6 +34,7 @@ class TestContentFunctions(unittest.TestCase):
         class BrokenDescriptor(object):
             def __get__(self, instance, *args, **kw):
                 raise AttributeError()
+
         class BrokenAttribute(object):
             asdf = BrokenDescriptor()
         obj = BrokenAttribute()
