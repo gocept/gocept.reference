@@ -15,6 +15,7 @@ import gocept.reference
 ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
 FunctionalLayer = zope.app.testing.functional.ZCMLLayer(
     ftesting_zcml, __name__, 'FunctionalLayer')
+FunctionalLayer.allow_teardown = True
 
 
 def FunctionalDocFileSuite(*paths, **kw):
