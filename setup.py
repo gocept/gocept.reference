@@ -37,6 +37,8 @@ setup(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 2 :: Only",
         "License :: OSI Approved :: Zope Public License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
