@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.9.3 (unreleased)
+0.9.3 (2017-05-14)
 ==================
 
 - Use `pytest` as test runner.
