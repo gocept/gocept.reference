@@ -35,7 +35,7 @@ def find_name(method):
                 if attr is descriptor:
                     return name
         else:
-            raise RuntimeError(
+            raise RuntimeError(  # pragma: no cover
                 "Can not automatically find name for reference. "
                 "This place in the code should never be reached.")
 
