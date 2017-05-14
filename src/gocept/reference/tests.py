@@ -48,11 +48,11 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestInterfaces))
     suite.addTest(unittest.makeSuite(TestContentFunctions))
     suite.addTest(gocept.reference.testing.FunctionalDocFileSuite(
-            'reference.txt',
-            'collection.txt',
-            'verify.txt',
-            'regression.txt',
-            'field.txt',
-            'fix.txt',
-            ))
+        'reference.txt',
+        'collection.txt',
+        'verify.txt',
+        'regression.txt',
+        'field.txt',
+        'fix.txt',
+    ))
     return suite
