@@ -4,8 +4,8 @@ from setuptools import setup, find_packages
 
 
 def read(filename):
-    path = os.path.join('src', 'gocept', 'reference', filename)
-    return file(path).read()
+    with open(os.path.join('src', 'gocept', 'reference', filename)) as f:
+        return f.read()
 
 
 name = "gocept.reference"
