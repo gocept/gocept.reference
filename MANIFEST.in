@@ -1,0 +1,17 @@
+include *.py
+include *.rst
+include *.txt
+include .coveragerc
+
+include buildout.cfg
+include pytest.ini
+include zopeapp-versions.cfg
+include ztk-versions.cfg
+
+include IDEEN
+exclude IDEEN
+
+exclude MANIFEST.in
+
+recursive-include src *.txt
+recursive-include src *.zcml

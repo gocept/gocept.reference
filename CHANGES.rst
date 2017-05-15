@@ -5,7 +5,8 @@ Changes
 0.9.4 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Version 0.9.3 did not include all files. Fixing this by adding a
+  MANIFEST.in.
 
 
 0.9.3 (2017-05-14)
