@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.9.4 (unreleased)
+0.9.4 (2017-05-15)
 ==================
 
 - Version 0.9.3 did not include all files. Fixing this by adding a
