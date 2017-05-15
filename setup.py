@@ -21,12 +21,12 @@ setup(
     description="Intrinsic references for Zope/ZODB applications.",
     long_description=(
         open('COPYRIGHT.txt').read() + "\n\n" +
-        open('README.txt').read() + "\n\n" +
+        open('README.rst').read() + "\n\n" +
         read('reference.txt') + "\n\n" +
         read('collection.txt') + "\n\n" +
         read('verify.txt') + "\n\n" +
         read('field.txt') + "\n\n" +
-        open('CHANGES.txt').read()),
+        open('CHANGES.rst').read()),
     license="ZPL 2.1",
     keywords="zodb zope3 intrinsic reference",
     classifiers=(
