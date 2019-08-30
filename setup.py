@@ -17,7 +17,7 @@ setup(
     version=version,
     author="gocept gmbh & co. kg",
     author_email="mail@gocept.com",
-    url='https://bitbucket.org/gocept/gocept.reference',
+    url='https://github.com/gocept/gocept.reference',
     description="Intrinsic references for Zope/ZODB applications.",
     long_description=(
         open('COPYRIGHT.txt').read() + "\n\n" +

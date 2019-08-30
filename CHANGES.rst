@@ -7,6 +7,8 @@ Changes
 
 - Nothing changed yet.
 
+- Migrate to Github.
+
 
 0.9.4 (2017-05-15)
 ==================

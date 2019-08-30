@@ -1,0 +1,16 @@
+language: python
+python:
+- 2.7
+install:
+- pip install -U setuptools zc.buildout setuptools-scm
+- buildout -n
+script:
+- bin/test --cache-clear --cov-report term-missing --cov src
+after_success: 
+cache:
+  pip: true
+  directories:
+  - eggs/
+notifications:
+  webhooks:
+    secure: MnnP3Zk/XAZ4mARVPB0SJpys2MPvENMQXL5O9M8MinOr3sr8hWt8jVmAryQMMr3+Dxy6JGplN3B/iF/EIjo/pPYq2EDcgoTQL7bNvYO2wQY+cnnLMQV0V/t7hvBBfSfsIhzoNRJ4/G6nGvY7f9RxBdD7LQdb5BZmPJCOAt9AyKneGWDM2j83crd4dALlVal1uNk4PeBXcibuXxwbJTOceqiMExdKGTqLWez8LQ0JQS+67J/Iw0vLhGdcJlEDkWkWRp97leJxh/DBITIlcA1d6DiGQRRtqN5ATizoq5IWrW/XLf7MwS88Y+KHgmvTR0hO8qAnNqVRLnaI8M8qjfjPMkIvW0qqjJlQhBRwVl/Bw6Z2oafDPjxq0ZbZ1nfmhqpILOWO8hVsTsf/iG8GctkffmXtVE7H1kOudESqTr13a8mw9ONAp1bcerSQuDbDBbvLESenVxffAmvmXll5aqg2aHcCo0IHUlqD9LE5OzbyreclER/i1roHZ/zy9HNYNWCaOBcbbusZ4/woOfRhxQz8PE7yvZ9Xo6h0gcBR2q09YMIa+RD/Fw0b7JPmYW+0u768u8ZOomx75sqD1z581+nz2YvZYw8fbs0jjNC+5B88Fh1NTlsseAmYVt+m1WfJXds3PnatHtg5wWv0C6CrVhSAOiZIcAUZ60gg/RMgwzsrn8s=
