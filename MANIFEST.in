@@ -11,6 +11,9 @@ include ztk-versions.cfg
 include IDEEN
 exclude IDEEN
 
+include .gitignore
+exclude .gitignore
+
 exclude MANIFEST.in
 
 recursive-include src *.txt
