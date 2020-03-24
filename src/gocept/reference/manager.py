@@ -12,10 +12,9 @@ import zope.container.contained
 import gocept.reference.interfaces
 
 
+@zope.interface.implementer(gocept.reference.interfaces.IReferenceManager)
 class ReferenceManager(persistent.Persistent,
                        zope.container.contained.Contained):
-
-    zope.interface.implements(gocept.reference.interfaces.IReferenceManager)
 
     def __init__(self):
         self.reference_count = BTrees.OIBTree.OIBTree()

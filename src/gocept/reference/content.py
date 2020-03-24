@@ -30,10 +30,9 @@ def sublocation_tree(obj):
                 yield sub
 
 
+@zope.component.adapter(zope.interface.Interface)
+@zope.interface.implementer(gocept.reference.interfaces.IReferenceSource)
 class ReferenceSource(object):
-
-    zope.interface.implements(gocept.reference.interfaces.IReferenceSource)
-    zope.component.adapts(zope.interface.Interface)
 
     def __init__(self, context):
         self.context = context
@@ -51,10 +50,9 @@ class ReferenceSource(object):
         return True
 
 
+@zope.component.adapter(zope.interface.Interface)
+@zope.interface.implementer(gocept.reference.interfaces.IReferenceTarget)
 class ReferenceTarget(object):
-
-    zope.interface.implements(gocept.reference.interfaces.IReferenceTarget)
-    zope.component.adapts(zope.interface.Interface)
 
     def __init__(self, context):
         self.context = context

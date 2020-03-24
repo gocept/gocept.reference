@@ -24,36 +24,32 @@ def FunctionalDocFileSuite(*paths, **kw):
     return suite
 
 
-class Address(zope.container.contained.Contained):
-
-    zope.interface.implements(
+@zope.interface.implementer(
         zope.annotation.interfaces.IAttributeAnnotatable)
+class Address(zope.container.contained.Contained):
 
     city = gocept.reference.Reference()
 
 
-class City(zope.container.contained.Contained):
-
-    zope.interface.implements(
+@zope.interface.implementer(
         zope.annotation.interfaces.IAttributeAnnotatable)
+class City(zope.container.contained.Contained):
 
     cultural_institutions = gocept.reference.ReferenceCollection(
         ensure_integrity=True)
 
 
-class Village(zope.container.contained.Contained):
-
-    zope.interface.implements(
+@zope.interface.implementer(
         zope.annotation.interfaces.IAttributeAnnotatable)
+class Village(zope.container.contained.Contained):
 
     cultural_institutions = gocept.reference.ReferenceCollection(
         ensure_integrity=False)
 
 
-class Monument(zope.container.contained.Contained):
-
-    zope.interface.implements(
+@zope.interface.implementer(
         zope.annotation.interfaces.IAttributeAnnotatable)
+class Monument(zope.container.contained.Contained):
 
     city = gocept.reference.Reference(ensure_integrity=True)
 
