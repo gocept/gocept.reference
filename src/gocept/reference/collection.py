@@ -126,7 +126,7 @@ class InstrumentedSet(persistent.Persistent):
             self._data.remove(key)
 
     def pop(self):
-        key = iter(self._data).next()
+        key = next(iter(self._data))
         self._data.remove(key)
         self._unregister_key(key)
         return gocept.reference.reference.lookup(key)

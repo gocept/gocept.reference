@@ -12,6 +12,7 @@ import zope.traversing.interfaces
 import zope.traversing.api
 
 import gocept.reference.interfaces
+import six
 
 
 def find_name(method):
@@ -31,7 +32,7 @@ def find_name(method):
         # We cannot simply iterate over dir(cls) since trying to get the
         # attributes would then lead to infinite recursion.
         for cls_ in cls.mro():
-            for name, attr in cls_.__dict__.iteritems():
+            for name, attr in six.iteritems(cls_.__dict__):
                 if attr is descriptor:
                     return name
         else:

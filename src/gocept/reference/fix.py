@@ -40,7 +40,7 @@ class Fixer(object):
             for name, ref in gocept.reference.content.find_references(obj):
                 try:
                     ref._register(obj)
-                except Exception, e:
+                except Exception as e:
                     key = zope.traversing.api.getPath(obj)
                     errors.append((key, name, str(e)))
         return errors
