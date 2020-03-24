@@ -1,3 +1,4 @@
+from __future__ import print_function
 import gocept.reference.fix
 import zope.site.hooks
 import zope.generations.utility
@@ -16,4 +17,4 @@ def evolve(context):
         print('The following errors were encountered while trying to update '
               'gocept.reference reference counts:')
         for key, name, msg in errors:
-            print '<%s>.%s: %s' % (key, name, msg)
+            print('<%s>.%s: %s' % (key, name, msg))
