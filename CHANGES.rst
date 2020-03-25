@@ -2,8 +2,12 @@
 Changes
 =======
 
-0.9.5 (unreleased)
-==================
+0.10 (unreleased)
+=================
+
+- Support Python 3.8.
+
+- Use tox as only test setup.
 
 - Migrate to Github.
 
