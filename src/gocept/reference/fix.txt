@@ -44,8 +44,8 @@ reference counts:
 >>> hanfried.city = jena
 >>> root['hanfried'] = hanfried
 
->>> dict(manager.reference_count)
-{u'/rosenkeller': 1, u'/jena': 1}
+>>> sorted(list(dict(manager.reference_count).items()))
+[(u'/jena', 1), (u'/rosenkeller', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 1
 >>> cospeda.cultural_institutions._ensured_usage_count
@@ -63,8 +63,8 @@ requirements:
 
 >>> fixer.fix_reference_counts()
 []
->>> dict(manager.reference_count)
-{u'/jena': 1, u'/museum_1806': 1}
+>>> sorted(list(dict(manager.reference_count).items()))
+[(u'/jena', 1), (u'/museum_1806', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 0
 >>> cospeda.cultural_institutions._ensured_usage_count
@@ -80,8 +80,8 @@ apply the fixer again:
 
 >>> fixer.fix_reference_counts()
 []
->>> dict(manager.reference_count)
-{u'/rosenkeller': 1, u'/jena': 1}
+>>> sorted(list(dict(manager.reference_count).items()))
+[(u'/jena', 1), (u'/rosenkeller', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 1
 >>> cospeda.cultural_institutions._ensured_usage_count
@@ -104,8 +104,8 @@ and let the fixer try to clean up the mess:
 >>> fixer.fix_reference_counts()
 [(u'/jena', 'cultural_institutions',
   "Reference target u'/stadium' no longer exists.")]
->>> dict(manager.reference_count)
-{u'/rosenkeller': 1, u'/jena': 1}
+>>> sorted(list(dict(manager.reference_count).items()))
+[(u'/jena', 1), (u'/rosenkeller', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 1
 >>> cospeda.cultural_institutions._ensured_usage_count

@@ -20,8 +20,8 @@ from the test module is necassary to persist instances of the class):
 >>> import zope.interface
 >>> from zope.annotation.interfaces import IAttributeAnnotatable
 
->>> class City(Contained):
-...     zope.interface.implements(IAttributeAnnotatable)
+>>> @zope.interface.implementer(IAttributeAnnotatable)
+... class City(Contained):   
 ...     cultural_institutions = gocept.reference.ReferenceCollection(
 ...         ensure_integrity=True)
 >>> from gocept.reference.testing import City
