@@ -9,7 +9,7 @@ def read(filename):
 
 
 name = "gocept.reference"
-version = '0.9.5.dev0'
+version = '0.10.dev0'
 
 
 setup(
@@ -37,8 +37,10 @@ setup(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved",
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 2 :: Only",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: Zope Public License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
