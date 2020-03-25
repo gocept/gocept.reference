@@ -18,3 +18,7 @@ coverage.xml
 testreport.xml
 .tox
 coverage-report
+.Python
+pip-selfcheck.json
+include
+lib
