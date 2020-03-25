@@ -19,9 +19,12 @@ integrity enforcement for that attribute while keeping its previously assigned
 value. This is how it should work:
 
 >>> halle.cultural_institutions = set((theatre,))
+>>> import transaction
+>>> transaction.commit()
 >>> del root['theatre']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+>>> transaction.abort()
 
 >>> halle.cultural_institutions = 1
 Traceback (most recent call last):
@@ -33,7 +36,7 @@ InstrumentedSet([u'/theatre'])
 >>> del root['theatre']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
-
+>>> transaction.abort()
 
 In version 0.7, a bug was found that caused attempts to unreference targets
 that weren't registered in the first place when using reference sets without
