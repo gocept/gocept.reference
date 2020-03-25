@@ -15,9 +15,9 @@ Let's build an example interface and class using a reference:
 >>> import zope.annotation.interfaces
 >>> class IAddress(zope.interface.Interface):
 ...     city = zope.interface.Attribute("City the address belonges to.")
->>> class Address(object):
-...     zope.interface.implements(
-...         zope.annotation.interfaces.IAttributeAnnotatable, IAddress)
+>>> @zope.interface.implementer(
+... 	zope.annotation.interfaces.IAttributeAnnotatable, IAddress)
+... class Address(object):
 ...     city = gocept.reference.Reference()
 
 verifyClass does not check for attributes:
@@ -40,8 +40,9 @@ reference is transparent. Even worse, a class which does not define
 the required attribute and an instance thereof with the attribute set,
 lets the test pass without defining the reference at all:
 
->>> class AddressWithoutReference(object):
-...     zope.interface.implements(IAddress)
+>>> @zope.interface.implementer(IAddress)
+... class AddressWithoutReference(object):
+... 	pass
 >>> address_without_ref = AddressWithoutReference()
 >>> address_without_ref.city = None
 >>> zope.interface.verify.verifyObject(IAddress, address_without_ref)
@@ -66,8 +67,8 @@ But if the attribute which does not exist on the instance does not
 have a reference descriptior on the class the gocept.reference's
 verifyObject can detect this:
 
->>> class StrangeAddress(object):
-...     zope.interface.implements(IAddress)
+>>> @zope.interface.implementer(IAddress)
+... class StrangeAddress(object):
 ...     @property
 ...     def city(self):
 ...         raise AttributeError
@@ -94,9 +95,9 @@ zope.inferface.verify.verfyObject:
 >>> class ICity(zope.interface.Interface):
 ...     cultural_institutions = zope.interface.Attribute(
 ...         "Cultural institutions the city has.")
->>> class City(object):
-...     zope.interface.implements(
+>>> @zope.interface.implementer(
 ...         zope.annotation.interfaces.IAttributeAnnotatable, ICity)
+... class City(object):     
 ...     cultural_institutions = gocept.reference.ReferenceCollection()
 
 >>> zope.interface.verify.verifyObject(ICity, City())

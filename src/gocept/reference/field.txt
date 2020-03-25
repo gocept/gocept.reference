@@ -25,9 +25,9 @@ For demonstration purposes we create an interface which uses both
 ...         value_type=zope.schema.Choice(title=u'items', vocabulary=dumb_vocab)
 ...     )
 
->>> class Collector(object):
-...     zope.interface.implements(
+>>> @zope.interface.implementer(
 ...         ICollector, zope.annotation.interfaces.IAttributeAnnotatable)
+... class Collector(object):
 ...     gr_items = gocept.reference.ReferenceCollection()
 ...     zs_items = gocept.reference.ReferenceCollection()
 

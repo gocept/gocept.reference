@@ -1,13 +1,12 @@
-# -*- coding: latin-1 -*-
-"""Tests for gocept.reference"""
-
-import unittest
-import zope.interface.verify
-
+import doctest
 import gocept.reference.content
 import gocept.reference.interfaces
 import gocept.reference.manager
 import gocept.reference.testing
+import re
+import sys
+import unittest
+import zope.interface.verify
 
 
 class TestInterfaces(unittest.TestCase):
@@ -43,6 +42,14 @@ class TestContentFunctions(unittest.TestCase):
             list(gocept.reference.content.find_references(obj)))
 
 
+class Py23DocChecker(doctest.OutputChecker):
+    def check_output(self, want, got, optionflags):
+        if sys.version_info[0] > 2:
+            want = re.sub("u'(.*?)'", "'\\1'", want)
+            want = re.sub('u"(.*?)"', '"\\1"', want)
+        return doctest.OutputChecker.check_output(self, want, got, optionflags)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestInterfaces))
@@ -54,5 +61,7 @@ def test_suite():
         'regression.txt',
         'field.txt',
         'fix.txt',
+        optionflags=(doctest.IGNORE_EXCEPTION_DETAIL),
+        checker=Py23DocChecker(),
     ))
     return suite

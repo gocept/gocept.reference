@@ -20,8 +20,8 @@ IAttributeAnnotatable as references are stored as annotations:
 >>> import zope.interface
 >>> from zope.annotation.interfaces import IAttributeAnnotatable
 
->>> class Address(Contained):
-...     zope.interface.implements(IAttributeAnnotatable)
+>>> @zope.interface.implementer(IAttributeAnnotatable)
+... class Address(Contained):
 ...     city = gocept.reference.Reference()
 
 >>> class City(Contained):
@@ -50,7 +50,7 @@ It is also possible to assign `None` to let the reference point to no
 object:
 
 >>> theuni.city = None
->>> print theuni.city
+>>> print(theuni.city)
 None
 
 Values can be deleted, the descriptor raises an AttributeError then:
@@ -71,8 +71,8 @@ TypeError: ...
 Integrity-ensured references
 ============================
 
->>> class Monument(Contained):
-...      zope.interface.implements(IAttributeAnnotatable)
+>>> @zope.interface.implementer(IAttributeAnnotatable)
+... class Monument(Contained):
 ...      city = gocept.reference.Reference(ensure_integrity=True)
 >>> from gocept.reference.testing import Monument
 
