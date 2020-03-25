@@ -66,6 +66,7 @@ setup(
     extras_require={
         'test': ['zope.app.testing',
                  'zope.app.zcmlfiles',
+                 'gocept.pytestlayer',
                  ]
     },
 )

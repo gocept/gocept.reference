@@ -13,17 +13,12 @@ or removed from the set:
 >>> zope.site.hooks.setSite(root)
 
 We need a class defining a ReferenceCollection. (Importing the class
-from the test module is necassary to persist instances of the class):
+from the test module is necessary to persist instances of the class):
 
 >>> from zope.container.contained import Contained
 >>> import gocept.reference
 >>> import zope.interface
 >>> from zope.annotation.interfaces import IAttributeAnnotatable
-
->>> @zope.interface.implementer(IAttributeAnnotatable)
-... class City(Contained):   
-...     cultural_institutions = gocept.reference.ReferenceCollection(
-...         ensure_integrity=True)
 >>> from gocept.reference.testing import City
 
 Initially, the collection isn't set and accessing it causes an
@@ -104,12 +99,14 @@ The cinema is back now, and Halle is in an operational state again:
 Now we can add it to the database:
 
 >>> root['halle'] = halle
+>>> transaction.commit()
 
 And deleting a referenced object will cause an error:
 
 >>> del root['cinema']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+>>> transaction.abort()
 
 When we remove the referencing collection, the target can be deleted again:
 
@@ -141,9 +138,11 @@ We can add new references, by adding objects to this set and the referenced
 integrity is ensured:
 
 >>> ci.add(root['park'])
+>>> transaction.commit()
 >>> del root['park']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+>>> transaction.abort()
 
 Removing and discarding works:
 
@@ -151,9 +150,11 @@ Removing and discarding works:
 >>> del root['park']
 >>> root['park'] = CulturalInstitution()
 >>> ci.add(root['park'])
+>>> transaction.commit()
 >>> del root['park']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+>>> transaction.abort()
 >>> ci.discard(root['park'])
 >>> del root['park']
 >>> ci.discard(root['halle'])
@@ -161,9 +162,11 @@ IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstituti
 Clearing works:
 
 >>> ci.add(root['theatre'])
+>>> transaction.commit()
 >>> del root['theatre']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+>>> transaction.abort()
 >>> ci.clear()
 >>> len(ci)
 0
@@ -172,9 +175,11 @@ IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstituti
 >>> root['cinema'] = CulturalInstitution()
 >>> root['cinema'].title = 'Cinema'
 >>> ci.add(root['cinema'])
+>>> transaction.commit()
 >>> del root['cinema']
 Traceback (most recent call last):
 IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+>>> transaction.abort()
 >>> ci.pop().title
 'Cinema'
 >>> del root['cinema']
