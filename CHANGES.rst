@@ -5,8 +5,6 @@ Changes
 0.9.5 (unreleased)
 ==================
 
-- Nothing changed yet.
-
 - Migrate to Github.
 
 
