@@ -3,9 +3,9 @@ Regressions
 ===========
 
 
->>> import zope.site.hooks
+>>> import zope.component.hooks
 >>> root = getRootFolder()
->>> zope.site.hooks.setSite(root)
+>>> zope.component.hooks.setSite(root)
 
 >>> from gocept.reference.testing import City
 >>> halle = root['halle'] = City()

@@ -6,7 +6,7 @@
 import transaction
 from persistent.dict import PersistentDict
 
-import zope.site.hooks
+import zope.component.hooks
 import zope.annotation.interfaces
 import zope.traversing.interfaces
 import zope.traversing.api
@@ -55,7 +55,7 @@ def get_manager():
 
 
 def get_root():
-    site = zope.site.hooks.getSite()
+    site = zope.component.hooks.getSite()
     locatable = zope.traversing.interfaces.IPhysicallyLocatable(site)
     return locatable.getRoot()
 
