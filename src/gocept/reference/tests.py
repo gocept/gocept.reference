@@ -37,7 +37,7 @@ class TestContentFunctions(unittest.TestCase):
         class BrokenAttribute(object):
             asdf = BrokenDescriptor()
         obj = BrokenAttribute()
-        self.assertEquals(
+        self.assertEqual(
             [],
             list(gocept.reference.content.find_references(obj)))
 

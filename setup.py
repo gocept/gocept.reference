@@ -62,7 +62,6 @@ setup(
         'zope.generations',
         'zope.interface',
         'zope.schema >= 3.6.0',
-        'zope.site',
         'zope.traversing',
     ],
     extras_require={

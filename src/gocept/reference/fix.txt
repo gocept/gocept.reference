@@ -2,9 +2,9 @@
 A tool for fixing inconsistent references
 =========================================
 
->>> import zope.site.hooks
+>>> import zope.component.hooks
 >>> root = getRootFolder()
->>> zope.site.hooks.setSite(root)
+>>> zope.component.hooks.setSite(root)
 
 >>> import gocept.reference.reference
 >>> manager = gocept.reference.reference.get_manager()

@@ -1,18 +1,18 @@
 from __future__ import print_function
 import gocept.reference.fix
-import zope.site.hooks
+import zope.component.hooks
 import zope.generations.utility
 
 
 def evolve(context):
     """Create usage counts of reference collections."""
-    old_site = zope.site.hooks.getSite()
+    old_site = zope.component.hooks.getSite()
     root = zope.generations.utility.getRootFolder(context)
     try:
-        zope.site.hooks.setSite(root)
+        zope.component.hooks.setSite(root)
         errors = gocept.reference.fix.Fixer().fix_reference_counts()
     finally:
-        zope.site.hooks.setSite(old_site)
+        zope.component.hooks.setSite(old_site)
     if errors:
         print('The following errors were encountered while trying to update '
               'gocept.reference reference counts:')
