@@ -52,7 +52,7 @@ setup(
     package_dir={'': 'src'},
     namespace_packages=['gocept'],
     install_requires=[
-        'ZODB3',
+        'ZODB',
         'setuptools',
         'transaction',
         'zope.annotation',

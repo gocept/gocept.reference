@@ -9,6 +9,8 @@ Changes
 
 - Use tox as only test setup.
 
+- Switch dependency from ``ZODB3`` to ``ZODB``.
+
 - Migrate to Github.
 
 
