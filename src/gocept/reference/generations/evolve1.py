@@ -1,4 +1,3 @@
-from __future__ import print_function
 import gocept.reference.fix
 import zope.component.hooks
 import zope.generations.utility

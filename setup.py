@@ -52,7 +52,9 @@ setup(
     package_dir={'': 'src'},
     namespace_packages=['gocept'],
     install_requires=[
+        'BTrees',
         'ZODB',
+        'persistent',
         'setuptools',
         'six',
         'transaction',
@@ -62,6 +64,7 @@ setup(
         'zope.deferredimport',
         'zope.generations',
         'zope.interface',
+        'zope.location',
         'zope.schema >= 3.6.0',
         'zope.traversing',
     ],
