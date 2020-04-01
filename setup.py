@@ -54,6 +54,7 @@ setup(
     install_requires=[
         'ZODB',
         'setuptools',
+        'six',
         'transaction',
         'zope.annotation',
         'zope.component',
