@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.10 (unreleased)
+0.10 (2020-04-01)
 =================
 
 - Support Python 3.8.
