@@ -4,7 +4,7 @@ import gocept.reference.interfaces
 import gocept.reference.manager
 import gocept.reference.testing
 import re
-import sys
+import six
 import unittest
 import zope.interface.verify
 
@@ -44,7 +44,7 @@ class TestContentFunctions(unittest.TestCase):
 
 class Py23DocChecker(doctest.OutputChecker):
     def check_output(self, want, got, optionflags):
-        if sys.version_info[0] > 2:
+        if six.PY3:
             want = re.sub("u'(.*?)'", "'\\1'", want)
             want = re.sub('u"(.*?)"', '"\\1"', want)
         return doctest.OutputChecker.check_output(self, want, got, optionflags)
