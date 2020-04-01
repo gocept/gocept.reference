@@ -14,6 +14,8 @@ exclude IDEEN
 include .gitignore
 exclude .gitignore
 
+include tox.ini
+
 exclude MANIFEST.in
 
 recursive-include src *.txt
