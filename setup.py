@@ -72,7 +72,7 @@ setup(
         'test': ['zope.app.testing',
                  'zope.app.zcmlfiles',
                  'gocept.pytestlayer',
-                 'mock ; python_version=="2.7"',
+                 'mock ; python_version=="2.7"',  # PY2
                  ]
     },
 )
