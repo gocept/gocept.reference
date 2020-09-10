@@ -5,7 +5,7 @@ Changes
 0.11 (unreleased)
 =================
 
-- Nothing changed yet.
+- Add the possibility to commit savepoints and output progress for Fixer.
 
 
 0.10 (2020-04-01)
