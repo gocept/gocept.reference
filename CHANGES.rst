@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.11 (unreleased)
+0.11 (2020-09-10)
 =================
 
 - Add the possibility to commit savepoints and output progress for Fixer.
