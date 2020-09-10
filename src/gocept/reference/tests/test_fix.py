@@ -5,7 +5,7 @@ import pytest
 import zope.component.hooks
 
 try:
-    import unittest.mock as mock
+    import unittest.mock as mock  # PY2
 except ImportError:
     import mock
 
