@@ -1,12 +1,11 @@
 # -*- coding: latin-1 -*-
 import doctest
+import gocept.reference
 import os.path
 import zope.annotation.interfaces
-import zope.container.contained
 import zope.app.testing.functional
+import zope.container.contained
 import zope.interface
-
-import gocept.reference
 
 
 ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
@@ -22,6 +21,12 @@ def FunctionalDocFileSuite(*paths, **kw):
     suite = zope.app.testing.functional.FunctionalDocFileSuite(*paths, **kw)
     suite.layer = FunctionalLayer
     return suite
+
+
+class TestCase(zope.app.testing.functional.FunctionalTestCase):
+    """Basic functional test case with zcml loaded."""
+
+    layer = FunctionalLayer
 
 
 @zope.interface.implementer(
