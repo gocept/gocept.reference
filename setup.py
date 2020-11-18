@@ -29,7 +29,7 @@ setup(
         open('CHANGES.rst').read()),
     license="ZPL 2.1",
     keywords="zodb zope3 intrinsic reference",
-    classifiers=(
+    classifiers=[
         "Topic :: Software Development",
         "Topic :: Database",
         "Framework :: ZODB",
@@ -45,7 +45,7 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-    ),
+    ],
     zip_safe=False,
     packages=find_packages('src'),
     include_package_data=True,
