@@ -5,7 +5,7 @@ Changes
 0.12 (unreleased)
 =================
 
-- Nothing changed yet.
+- Use Github actions as CI.
 
 
 0.11 (2020-09-10)

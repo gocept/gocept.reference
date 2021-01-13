@@ -5,6 +5,7 @@ source = gocept.reference
 [report]
 precision = 2
 omit = */generations/evolve*.py
+fail_under = 97
 
 [html]
 directory = coverage-report
