@@ -3,10 +3,7 @@ include *.rst
 include *.txt
 include .coveragerc
 
-include buildout.cfg
 include pytest.ini
-include zopeapp-versions.cfg
-include ztk-versions.cfg
 
 include IDEEN
 exclude IDEEN
