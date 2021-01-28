@@ -1,4 +1,3 @@
-# -*- coding: latin-1 -*-
 import doctest
 import gocept.reference
 import os.path
@@ -30,14 +29,14 @@ class TestCase(zope.app.testing.functional.FunctionalTestCase):
 
 
 @zope.interface.implementer(
-        zope.annotation.interfaces.IAttributeAnnotatable)
+    zope.annotation.interfaces.IAttributeAnnotatable)
 class Address(zope.container.contained.Contained):
 
     city = gocept.reference.Reference()
 
 
 @zope.interface.implementer(
-        zope.annotation.interfaces.IAttributeAnnotatable)
+    zope.annotation.interfaces.IAttributeAnnotatable)
 class City(zope.container.contained.Contained):
 
     cultural_institutions = gocept.reference.ReferenceCollection(
@@ -45,7 +44,7 @@ class City(zope.container.contained.Contained):
 
 
 @zope.interface.implementer(
-        zope.annotation.interfaces.IAttributeAnnotatable)
+    zope.annotation.interfaces.IAttributeAnnotatable)
 class Village(zope.container.contained.Contained):
 
     cultural_institutions = gocept.reference.ReferenceCollection(
@@ -53,7 +52,7 @@ class Village(zope.container.contained.Contained):
 
 
 @zope.interface.implementer(
-        zope.annotation.interfaces.IAttributeAnnotatable)
+    zope.annotation.interfaces.IAttributeAnnotatable)
 class Monument(zope.container.contained.Contained):
 
     city = gocept.reference.Reference(ensure_integrity=True)

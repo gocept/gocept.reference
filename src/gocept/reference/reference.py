@@ -1,18 +1,15 @@
-# vim:fileencoding=utf-8
 # Copyright (c) 2007-2011 gocept gmbh & co. kg
 # See also LICENSE.txt
 """References to persistent objects."""
 
-import transaction
 from persistent.dict import PersistentDict
-
-import zope.component.hooks
-import zope.annotation.interfaces
-import zope.traversing.interfaces
-import zope.traversing.api
-
 import gocept.reference.interfaces
 import six
+import transaction
+import zope.annotation.interfaces
+import zope.component.hooks
+import zope.traversing.api
+import zope.traversing.interfaces
 
 
 def find_name(method):

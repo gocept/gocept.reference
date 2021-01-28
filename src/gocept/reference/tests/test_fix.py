@@ -4,6 +4,7 @@ import gocept.reference.testing as grt
 import pytest
 import zope.component.hooks
 
+
 try:
     import unittest.mock as mock  # PY2
 except ImportError:

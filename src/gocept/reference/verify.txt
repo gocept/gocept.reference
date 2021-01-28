@@ -97,7 +97,7 @@ zope.inferface.verify.verfyObject:
 ...         "Cultural institutions the city has.")
 >>> @zope.interface.implementer(
 ...         zope.annotation.interfaces.IAttributeAnnotatable, ICity)
-... class City(object):     
+... class City(object):
 ...     cultural_institutions = gocept.reference.ReferenceCollection()
 
 >>> zope.interface.verify.verifyObject(ICity, City())

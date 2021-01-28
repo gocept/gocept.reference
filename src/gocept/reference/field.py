@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2009-2010 gocept gmbh & co. kg
 # See also LICENSE.txt
 
-import zope.schema
 import gocept.reference.collection
+import zope.schema
 import zope.schema._bootstrapinterfaces
 
 
