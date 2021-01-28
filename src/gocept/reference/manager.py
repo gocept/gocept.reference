@@ -1,15 +1,12 @@
-# vim:fileencoding=utf-8
 # Copyright (c) 2007-2010 gocept gmbh & co. kg
 # See also LICENSE.txt
 """Reference manager implementation."""
 
-import persistent
 import BTrees.OIBTree
-
-import zope.interface
-import zope.container.contained
-
 import gocept.reference.interfaces
+import persistent
+import zope.container.contained
+import zope.interface
 
 
 @zope.interface.implementer(gocept.reference.interfaces.IReferenceManager)

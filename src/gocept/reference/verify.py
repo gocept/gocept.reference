@@ -1,13 +1,11 @@
-# -*- coding: latin-1 -*-
 # Copyright (c) 2008-2010 gocept gmbh & co. kg
 # See also LICENSE.txt
 # $Id$
 
-import zope.interface.verify
-import zope.interface.exceptions
-
-import gocept.reference.reference
 import gocept.reference.collection
+import gocept.reference.reference
+import zope.interface.exceptions
+import zope.interface.verify
 
 
 def verifyObject(iface, candidate, tentative=0):

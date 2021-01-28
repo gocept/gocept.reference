@@ -2,10 +2,9 @@
 # See also LICENSE.txt
 """Install the reference package."""
 
-import zope.generations.utility
-
-import gocept.reference.manager
 import gocept.reference.interfaces
+import gocept.reference.manager
+import zope.generations.utility
 
 
 def evolve(context):

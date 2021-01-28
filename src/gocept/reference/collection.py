@@ -1,14 +1,12 @@
-# vim:fileencoding=utf-8
 # Copyright (c) 2008-2010 gocept gmbh & co. kg
 # See also LICENSE.txt
 """Reference lists."""
 
 import BTrees.OOBTree
+import gocept.reference.reference
 import persistent
 import transaction
 import zope.traversing.api
-
-import gocept.reference.reference
 
 
 class ReferenceCollection(gocept.reference.reference.ReferenceBase):

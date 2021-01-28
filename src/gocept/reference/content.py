@@ -1,17 +1,14 @@
-# vim:fileencoding=utf-8
 """Interaction between the reference machinery and content objects."""
-
-import transaction
-
-import zope.interface
-import zope.component
-import zope.location
-import zope.traversing.interfaces
-import zope.traversing.api
-import zope.container.interfaces
 
 import gocept.reference.interfaces
 import gocept.reference.reference
+import transaction
+import zope.component
+import zope.container.interfaces
+import zope.interface
+import zope.location
+import zope.traversing.api
+import zope.traversing.interfaces
 
 
 def find_references(obj):
