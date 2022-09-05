@@ -4,8 +4,8 @@ import gocept.reference.interfaces
 import gocept.reference.reference
 import transaction
 import zope.component
-import zope.container.interfaces
 import zope.interface
+import zope.lifecycleevent.interfaces
 import zope.location
 import zope.traversing.api
 import zope.traversing.interfaces
@@ -70,7 +70,7 @@ class ReferenceTarget(object):
 
 
 @zope.component.adapter(zope.interface.Interface,
-                        zope.container.interfaces.IObjectMovedEvent)
+                        zope.lifecycleevent.interfaces.IObjectMovedEvent)
 def ensure_referential_integrity(obj, event):
     if event.oldParent is None:
         # The object was not in the hierarchy before so it didn't have a path
@@ -105,14 +105,14 @@ def ensure_referential_integrity(obj, event):
 
 
 @zope.component.adapter(zope.interface.Interface,
-                        zope.container.interfaces.IObjectAddedEvent)
+                        zope.lifecycleevent.interfaces.IObjectAddedEvent)
 def ensure_registration(obj, event):
     for name, ref in find_references(obj):
         ref._register(obj)
 
 
 @zope.component.adapter(zope.interface.Interface,
-                        zope.container.interfaces.IObjectRemovedEvent)
+                        zope.lifecycleevent.interfaces.IObjectRemovedEvent)
 def ensure_unregistration(obj, event):
     for name, ref in find_references(obj):
         ref._unregister(obj)
