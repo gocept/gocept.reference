@@ -7,6 +7,10 @@ Changes
 
 - Use Github actions as CI.
 
+- Add support for Python 3.7, 3.9 and 3.10.
+
+- Fix deprecation warnings.
+
 
 0.11 (2020-09-10)
 =================
