@@ -70,13 +70,13 @@ The result is a broken reference:
 
 >>> list(halle.cultural_institutions)
 Traceback (most recent call last):
-LookupError: Reference target u'/cinema' no longer exists.
+gocept.reference.interfaces.LookupError: Reference target '/cinema' no longer exists.
 
 Also, we can not locate `halle` right now, as long as the reference is broken:
 
 >>> root['halle'] = halle
 Traceback (most recent call last):
-LookupError: Reference target u'/cinema' no longer exists.
+gocept.reference.interfaces.LookupError: Reference target '/cinema' no longer exists.
 
 The transaction was doomed, so we abort:
 
@@ -105,7 +105,7 @@ And deleting a referenced object will cause an error:
 
 >>> del root['cinema']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 
 When we remove the referencing collection, the target can be deleted again:
@@ -141,7 +141,7 @@ integrity is ensured:
 >>> transaction.commit()
 >>> del root['park']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 
 Removing and discarding works:
@@ -153,7 +153,7 @@ Removing and discarding works:
 >>> transaction.commit()
 >>> del root['park']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 >>> ci.discard(root['park'])
 >>> del root['park']
@@ -165,7 +165,7 @@ Clearing works:
 >>> transaction.commit()
 >>> del root['theatre']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 >>> ci.clear()
 >>> len(ci)
@@ -178,7 +178,7 @@ IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstituti
 >>> transaction.commit()
 >>> del root['cinema']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 >>> ci.pop().title
 'Cinema'
@@ -193,7 +193,7 @@ Updating works:
 2
 >>> del root['cinema']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> del root['theatre']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.

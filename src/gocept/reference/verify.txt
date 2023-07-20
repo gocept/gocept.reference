@@ -31,8 +31,7 @@ interface:
 
 >>> zope.interface.verify.verifyObject(IAddress, Address())
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
-The city attribute was not provided.
+zope.interface.exceptions.BrokenImplementation: The object <...Address object at 0x...> has failed to implement interface builtins.IAddress: The builtins.IAddress.city attribute was not provided.
 
 Setting a value on the reference attribute does not help because after
 that it ist not possible to check if there is a reference as the
@@ -75,16 +74,13 @@ verifyObject can detect this:
 >>> strange_address = StrangeAddress()
 >>> gocept.reference.verify.verifyObject(IAddress, strange_address)
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
-The city attribute was not provided.
+zope.interface.exceptions.BrokenImplementation: An object has failed to implement interface builtins.IAddress: The 'city' attribute was not provided.
 
 Like ``zope.interface.verify.verifyObject`` detects, too:
 
 >>> zope.interface.verify.verifyObject(IAddress, strange_address)
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IAddress>
-The city attribute was not provided.
-
+zope.interface.exceptions.BrokenImplementation: The object <...StrangeAddress object at 0x...> has failed to implement interface builtins.IAddress: The builtins.IAddress.city attribute was not provided.
 
 Reference collections
 =====================
@@ -102,8 +98,7 @@ zope.inferface.verify.verfyObject:
 
 >>> zope.interface.verify.verifyObject(ICity, City())
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.ICity>
-The cultural_institutions attribute was not provided.
+zope.interface.exceptions.BrokenImplementation: The object <...City object at 0x...> has failed to implement interface builtins.ICity: The builtins.ICity.cultural_institutions attribute was not provided.
 
 But the special variant in gocept.reference works for collections, too:
 

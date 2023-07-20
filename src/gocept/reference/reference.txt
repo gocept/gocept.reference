@@ -92,14 +92,14 @@ True
 
 >>> del root['dessau']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move
+gocept.reference.interfaces.IntegrityError: Can't delete or move
   <gocept.reference.testing.City object at 0x...>.
   The (sub-)object <gocept.reference.testing.City object at 0x...> is
   still being referenced.
 
 >>> transaction.commit()
 Traceback (most recent call last):
-DoomedTransaction
+transaction.interfaces.DoomedTransaction: transaction doomed, cannot commit
 
 >>> transaction.abort()
 >>> 'dessau' in root
@@ -148,7 +148,7 @@ True
 >>> del root['jena']
 >>> fuchsturm.city
 Traceback (most recent call last):
-LookupError: Reference target u'/jena' no longer exists.
+gocept.reference.interfaces.LookupError: Reference target '/jena' no longer exists.
 
 
 Changing the location state of the source
@@ -161,13 +161,13 @@ referential integrity is not given:
 
 >>> root['fuchsturm'] = fuchsturm
 Traceback (most recent call last):
-LookupError: Reference target u'/jena' no longer exists.
+gocept.reference.interfaces.LookupError: Reference target '/jena' no longer exists.
 
 The transaction was doomed, let's recover the last working state:
 
 >>> transaction.commit()
 Traceback (most recent call last):
-DoomedTransaction
+transaction.interfaces.DoomedTransaction: transaction doomed, cannot commit
 
 >>> transaction.abort()
 
@@ -228,7 +228,7 @@ False
 
 >>> del root['folder']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move
+gocept.reference.interfaces.IntegrityError: Can't delete or move
   <zope.container.sample.SampleContainer object at 0x...>.
   The (sub-)object <gocept.reference.testing.City object at 0x...> is still
   being referenced.

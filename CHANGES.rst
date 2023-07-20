@@ -2,10 +2,10 @@
 Changes
 =======
 
-0.12 (unreleased)
-=================
+1.0 (unreleased)
+================
 
-- Use Github actions as CI.
+- Drop support for Python 2.7.
 
 - Add support for Python 3.7, 3.9 and 3.10.
 

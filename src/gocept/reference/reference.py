@@ -4,7 +4,6 @@
 
 from persistent.dict import PersistentDict
 import gocept.reference.interfaces
-import six
 import transaction
 import zope.annotation.interfaces
 import zope.component.hooks
@@ -29,7 +28,7 @@ def find_name(method):
         # We cannot simply iterate over dir(cls) since trying to get the
         # attributes would then lead to infinite recursion.
         for cls_ in cls.mro():
-            for name, attr in six.iteritems(cls_.__dict__):
+            for name, attr in cls_.__dict__.items():
                 if attr is descriptor:
                     return name
         else:
@@ -73,7 +72,7 @@ def get_storage(instance):
     return result
 
 
-class ReferenceBase(object):
+class ReferenceBase:
     """A base class for specific references."""
 
     def __init__(self, __name__=None, ensure_integrity=False):
