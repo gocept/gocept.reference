@@ -23,13 +23,12 @@ def sublocation_tree(obj):
     isub = zope.location.interfaces.ISublocations(obj, None)
     if isub:
         for direct in isub.sublocations():
-            for sub in sublocation_tree(direct):
-                yield sub
+            yield from sublocation_tree(direct)
 
 
 @zope.component.adapter(zope.interface.Interface)
 @zope.interface.implementer(gocept.reference.interfaces.IReferenceSource)
-class ReferenceSource(object):
+class ReferenceSource:
 
     def __init__(self, context):
         self.context = context
@@ -49,7 +48,7 @@ class ReferenceSource(object):
 
 @zope.component.adapter(zope.interface.Interface)
 @zope.interface.implementer(gocept.reference.interfaces.IReferenceTarget)
-class ReferenceTarget(object):
+class ReferenceTarget:
 
     def __init__(self, context):
         self.context = context
@@ -93,7 +92,7 @@ def ensure_referential_integrity(obj, event):
     suffix = ''
     suffix_obj = obj
     while suffix_obj is not event.object:
-        suffix = '/%s%s' % (suffix_obj.__name__, suffix)
+        suffix = '/{}{}'.format(suffix_obj.__name__, suffix)
         suffix_obj = suffix_obj.__parent__
     old_path = old_path + suffix
 

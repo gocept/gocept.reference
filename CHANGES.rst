@@ -5,9 +5,7 @@ Changes
 1.0 (unreleased)
 ================
 
-- Drop support for Python 2.7, 3.5, 3.6.
-
-- Use Github actions as CI.
+- Drop support for Python 2.7.
 
 - Add support for Python 3.7, 3.9 and 3.10.
 

@@ -16,4 +16,4 @@ def evolve(context):
         print('The following errors were encountered while trying to update '
               'gocept.reference reference counts:')
         for key, name, msg in errors:
-            print('<%s>.%s: %s' % (key, name, msg))
+            print('<{}>.{}: {}'.format(key, name, msg))

@@ -23,7 +23,7 @@ value. This is how it should work:
 >>> transaction.commit()
 >>> del root['theatre']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 
 >>> halle.cultural_institutions = 1
@@ -31,11 +31,11 @@ Traceback (most recent call last):
 TypeError: 1 can't be assigned as a reference collection: only sets are allowed.
 
 >>> halle.cultural_institutions
-InstrumentedSet([u'/theatre'])
+InstrumentedSet(['/theatre'])
 
 >>> del root['theatre']
 Traceback (most recent call last):
-IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
+gocept.reference.interfaces.IntegrityError: Can't delete or move <gocept.reference.testing.CulturalInstitution object at 0x...>. The (sub-)object <gocept.reference.testing.CulturalInstitution object at 0x...> is still being referenced.
 >>> transaction.abort()
 
 In version 0.7, a bug was found that caused attempts to unreference targets

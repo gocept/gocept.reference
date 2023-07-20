@@ -1,3 +1,4 @@
+from unittest import mock
 import gocept.reference.fix
 import gocept.reference.reference
 import gocept.reference.testing as grt
@@ -5,27 +6,21 @@ import pytest
 import zope.component.hooks
 
 
-try:
-    import unittest.mock as mock  # PY2
-except ImportError:
-    import mock
-
-
 class TestFixer(grt.TestCase):
     """Testing .fix.Fixer"""
 
     def setUp(self):
-        super(TestFixer, self).setUp()
+        super().setUp()
         root = self.getRootFolder()
         zope.component.hooks.setSite(root)
 
         root['jena'] = jena = grt.City()
         root['rosenkeller'] = rosenkeller = grt.CulturalInstitution()
-        jena.cultural_institutions = set((rosenkeller,))
+        jena.cultural_institutions = {rosenkeller}
 
         root['cospeda'] = cospeda = grt.Village()
         root['museum_1806'] = museum_1806 = grt.CulturalInstitution()
-        cospeda.cultural_institutions = set((museum_1806,))
+        cospeda.cultural_institutions = {museum_1806}
 
         root['thomas'] = thomas = grt.Address()
         thomas.city = jena

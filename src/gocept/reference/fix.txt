@@ -45,7 +45,7 @@ reference counts:
 >>> root['hanfried'] = hanfried
 
 >>> sorted(list(dict(manager.reference_count).items()))
-[(u'/jena', 1), (u'/rosenkeller', 1)]
+[('/jena', 1), ('/rosenkeller', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 1
 >>> cospeda.cultural_institutions._ensured_usage_count
@@ -64,7 +64,7 @@ requirements:
 >>> fixer.fix_reference_counts()
 []
 >>> sorted(list(dict(manager.reference_count).items()))
-[(u'/jena', 1), (u'/museum_1806', 1)]
+[('/jena', 1), ('/museum_1806', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 0
 >>> cospeda.cultural_institutions._ensured_usage_count
@@ -81,7 +81,7 @@ apply the fixer again:
 >>> fixer.fix_reference_counts()
 []
 >>> sorted(list(dict(manager.reference_count).items()))
-[(u'/jena', 1), (u'/rosenkeller', 1)]
+[('/jena', 1), ('/rosenkeller', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 1
 >>> cospeda.cultural_institutions._ensured_usage_count
@@ -92,20 +92,20 @@ it will report the issue but try to do its best otherwise. To see this, we
 change all conceivable counts inconsistently, introduce a dangling reference
 and let the fixer try to clean up the mess:
 
->>> manager.reference_count[u'/jena'] = 5
->>> del manager.reference_count[u'/rosenkeller']
->>> manager.reference_count[u'/cospeda'] = 1
+>>> manager.reference_count['/jena'] = 5
+>>> del manager.reference_count['/rosenkeller']
+>>> manager.reference_count['/cospeda'] = 1
 >>> jena.cultural_institutions._ensured_usage_count = 0
 >>> cospeda.cultural_institutions._ensured_usage_count = 2
 
->>> jena.cultural_institutions._data.insert(u'/stadium')
+>>> jena.cultural_institutions._data.insert('/stadium')
 1
 
 >>> fixer.fix_reference_counts()
-[(u'/jena', 'cultural_institutions',
-  "Reference target u'/stadium' no longer exists.")]
+[('/jena', 'cultural_institutions',
+  "Reference target '/stadium' no longer exists.")]
 >>> sorted(list(dict(manager.reference_count).items()))
-[(u'/jena', 1), (u'/rosenkeller', 1)]
+[('/jena', 1), ('/rosenkeller', 1)]
 >>> jena.cultural_institutions._ensured_usage_count
 1
 >>> cospeda.cultural_institutions._ensured_usage_count

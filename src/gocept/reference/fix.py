@@ -6,7 +6,7 @@ import transaction
 import zope.traversing.api
 
 
-class Fixer(object):
+class Fixer:
     """Tool for restoring consistent reference counts.
 
     The __init__ takes the following arguments:
@@ -22,7 +22,7 @@ class Fixer(object):
 
     def __init__(
             self, do_savepoints=False, savepoint_step=5000, verbose=False):
-        self.root = gocept.reference.reference.lookup(u'/')
+        self.root = gocept.reference.reference.lookup('/')
         self.do_savepoints = do_savepoints
         self.savepoint_step = savepoint_step
         self.verbose = verbose
@@ -41,7 +41,7 @@ class Fixer(object):
             obj_count += 1
             if obj_count % self.savepoint_step == 0:
                 if self.verbose:
-                    print('{} objects reseted.'.format(obj_count))
+                    print(f'{obj_count} objects reseted.')
                     sys.stdout.flush()
                 if self.do_savepoints:
                     transaction.savepoint()
@@ -65,7 +65,7 @@ class Fixer(object):
             obj_count += 1
             if obj_count % self.savepoint_step == 0:
                 if self.verbose:
-                    print('{} objects registered.'.format(obj_count))
+                    print(f'{obj_count} objects registered.')
                     sys.stdout.flush()
                 if self.do_savepoints:
                     transaction.savepoint()
